@@ -1,0 +1,18 @@
+# caches
+__pycache__/
+
+# logs
+*.log
+
+# env
+.env
+env*/
+
+# vscode
+.vscode/
+setup.cfg
+
+# bdd
+bdd.sqlite3
+migrations/
+
