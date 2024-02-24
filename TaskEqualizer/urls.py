@@ -17,10 +17,13 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from tasks_api.views import api
 
+from auth_api.views import login, register
+from tasks_api.views import api
 
 urlpatterns = [
     path("api/", api.urls),
     path("admin/", admin.site.urls),
+    path("login/", login, name="login"),
+    path("register/", register, name="register"),
 ]
