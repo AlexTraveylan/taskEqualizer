@@ -13,6 +13,5 @@ env*/
 setup.cfg
 
 # bdd
-bdd.sqlite3
+db*
 migrations/
-
