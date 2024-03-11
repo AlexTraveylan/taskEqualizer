@@ -1,6 +1,7 @@
 from ninja import Router
 
-from tasks_api.CRUDs.task.models import Task, TaskSchemaIn, TaskSchemaOut
+from tasks_api.models import Task
+from tasks_api.schema import TaskSchemaIn, TaskSchemaOut
 
 router = Router()
 

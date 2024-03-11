@@ -19,7 +19,7 @@ def login(request):
     user = authenticate(username=username, password=password)
     if user is not None:
         response = JsonResponse({"message": "Login successful"}, status=200)
-        token = HeaderJwtToken(username=username)
+        token = HeaderJwtToken(user_id=user.id)
         response.set_cookie("auth_token", token.to_jwt_token())
         return response
     else:
@@ -46,8 +46,8 @@ def register(request):
     if user:
         return JsonResponse({"message": "Username already exists"}, status=400)
 
-    User.objects.create_user(username=username, password=password)
-    token = HeaderJwtToken(username=username)
+    user = User.objects.create_user(username=username, password=password)
+    token = HeaderJwtToken(user_id=user.id)
     response = JsonResponse({"message": "User created"}, status=201)
     response.set_cookie("auth_token", token.to_jwt_token())
 
@@ -56,4 +56,7 @@ def register(request):
 
 @login_token_required
 def get_user(request):
-    return JsonResponse({"username": request.user.username})
+    reponse = JsonResponse({"username": request.member.username}, status=200)
+    reponse.set_cookie("auth_token", request.auth_token)
+
+    return reponse

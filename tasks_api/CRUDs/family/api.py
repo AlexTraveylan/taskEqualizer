@@ -1,9 +1,13 @@
 from django.shortcuts import get_object_or_404
 from ninja import Router
 
-from tasks_api.CRUDs.family.models import Family, FamilySchemaIn, FamilySchemaOut
-from tasks_api.CRUDs.member.models import MemberSchemaOut
-from tasks_api.CRUDs.possibles_tasks.models import PossibleTaskSchemaOut
+from tasks_api.models import Family
+from tasks_api.schema import (
+    FamilySchemaIn,
+    FamilySchemaOut,
+    MemberSchemaOut,
+    PossibleTaskSchemaOut,
+)
 
 router = Router()
 
