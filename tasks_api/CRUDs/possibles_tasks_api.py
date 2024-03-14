@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from tasks_api.models import PossibleTask
-from tasks_api.schema import PossibleTaskSchemaIn, PossibleTaskSchemaOut
+from tasks_api.schemas import PossibleTaskSchemaIn, PossibleTaskSchemaOut
 
 router = Router()
 

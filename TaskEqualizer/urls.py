@@ -18,13 +18,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from auth_api.views import get_user, login, register
+from auth_api.views import (
+    get_member_by_cookie,
+    login,
+    register_create_family,
+    register_with_invitation,
+)
 from tasks_api.views import api
 
 urlpatterns = [
     path("api/", api.urls),
     path("admin/", admin.site.urls),
     path("login", login, name="login"),
-    path("register", register, name="register"),
-    path("get_user", get_user, name="get_user"),
+    path("register_create", register_create_family, name="register_create"),
+    path("register_invite", register_with_invitation, name="register_invite"),
+    path("get_member", get_member_by_cookie, name="get_member"),
 ]

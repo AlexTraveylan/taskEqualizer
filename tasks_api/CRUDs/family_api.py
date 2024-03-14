@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from tasks_api.models import Family
-from tasks_api.schema import (
+from tasks_api.schemas import (
     FamilySchemaIn,
     FamilySchemaOut,
     MemberSchemaOut,

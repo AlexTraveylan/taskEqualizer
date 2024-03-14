@@ -15,7 +15,7 @@ class MemberSchemaIn(Schema):
     family_id: int
 
 
-MemberSchemaOut = create_schema(Member, exclude=["password"])
+MemberSchemaOut = create_schema(Member)
 
 
 class PossibleTaskSchemaIn(Schema):

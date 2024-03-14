@@ -27,7 +27,7 @@ class HeaderJwtToken:
     def to_dict(self):
         """Convert the object to a dict"""
         return {
-            "user_id": self.user_id,
+            "user_id": str(self.user_id),
             "expiration": self.expiration.timestamp(),
         }
 

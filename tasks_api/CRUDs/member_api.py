@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from tasks_api.models import Member
-from tasks_api.schema import MemberSchemaIn, MemberSchemaOut, TaskSchemaOut
+from tasks_api.schemas import MemberSchemaIn, MemberSchemaOut, TaskSchemaOut
 
 router = Router()
 
@@ -35,7 +35,7 @@ def list_member_tasks(request, member_id: int):
 
 
 @router.get("/{member_id}", response=MemberSchemaOut, tags=["member"])
-def retrieve_member(request, member_id: int):
+def retrieve_member(request, member_id: str):
     """Retrieve a member."""
 
     member = get_object_or_404(Member, id=member_id)
