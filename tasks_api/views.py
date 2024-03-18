@@ -2,11 +2,11 @@
 
 from ninja import NinjaAPI
 
-from tasks_api.CRUDs.family_api import router as family_router
-from tasks_api.CRUDs.invitation_api import router as invitation_router
-from tasks_api.CRUDs.member_api import router as member_router
-from tasks_api.CRUDs.possibles_tasks_api import router as possible_task_router
-from tasks_api.CRUDs.task_api import router as task_router
+from tasks_api.family.family_api import router as family_router
+from tasks_api.invitation.invitation_api import router as invitation_router
+from tasks_api.member.member_api import router as member_router
+from tasks_api.possibles_task.possibles_tasks_api import router as possible_task_router
+from tasks_api.task.task_api import router as task_router
 
 api = NinjaAPI()
 

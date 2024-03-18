@@ -21,6 +21,7 @@ from django.urls import path
 from auth_api.views import (
     get_member_by_cookie,
     login,
+    logout,
     register_create_family,
     register_with_invitation,
 )
@@ -33,4 +34,5 @@ urlpatterns = [
     path("register_create", register_create_family, name="register_create"),
     path("register_invite", register_with_invitation, name="register_invite"),
     path("get_member", get_member_by_cookie, name="get_member"),
+    path("logout", logout, name="logout"),
 ]

@@ -6,11 +6,11 @@ import datetime
 import os
 
 import jwt
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
 
-from tasks_api.models import Member
+from tasks_api.member.models import Member
 
 load_dotenv()
 
@@ -39,7 +39,7 @@ class HeaderJwtToken:
         """Create a HeaderJwtToken object from a dict"""
         return cls(user_id=data["user_id"])
 
-    def to_jwt_token(self):
+    def to_jwt_token(self) -> str:
         """Create a jwt token from the object"""
         return jwt.encode(
             self.to_dict(),
@@ -64,7 +64,15 @@ class HeaderJwtToken:
         return datetime.datetime.now() > self.expiration
 
 
-# decorateur pour les endpoints with django
+# decorateur for endpoint that require a token
+
+
+class CustomRequest(HttpRequest):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.member: Member | None = None
+        self.auth_token: str | None = None
 
 
 def login_token_required(func_):

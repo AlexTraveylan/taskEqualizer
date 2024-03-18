@@ -1,0 +1,78 @@
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from ninja import Router
+
+from auth_api.auth_token import CustomRequest, login_token_required
+from tasks_api.possibles_task.models import PossibleTask
+from tasks_api.possibles_task.schemas import PossibleTaskSchemaIn
+
+router = Router()
+
+
+@login_token_required
+@router.post("/", tags=["possible_task"])
+def create_possible_task(request: CustomRequest, payload: PossibleTaskSchemaIn):
+    """Create a possible task."""
+
+    if request.member.family.id != payload.family_id:
+        return JsonResponse(
+            {"message": "You are not allowed to access this family."}, status=403
+        )
+
+    new_possible_task = PossibleTask.objects.create(**payload.dict())
+
+    reponse = JsonResponse(new_possible_task.to_dict(), status=201)
+    reponse.set_cookie("auth_token", request.auth_token)
+
+    return reponse
+
+
+@login_token_required
+@router.put("/{possible_task_id}", tags=["possible_task"])
+def update_possible_task(
+    request: CustomRequest, possible_task_id: int, payload: PossibleTaskSchemaIn
+):
+    """Update a possible task."""
+
+    if request.member.family.id != payload.family_id:
+        return JsonResponse(
+            {"message": "You are not allowed to access this family."}, status=403
+        )
+
+    possible_task = get_object_or_404(PossibleTask, id=possible_task_id)
+
+    if request.member.family != possible_task.family:
+        return JsonResponse(
+            {"message": "You are not allowed to access this family."}, status=403
+        )
+
+    for key, value in payload.dict().items():
+        setattr(possible_task, key, value)
+
+    possible_task.save()
+
+    reponse = JsonResponse(possible_task.to_dict(), status=200)
+    reponse.set_cookie("auth_token", request.auth_token)
+
+    return reponse
+
+
+@login_token_required
+@router.delete("/{possible_task_id}", tags=["possible_task"])
+def delete_possible_task(request: CustomRequest, possible_task_id: int):
+    """Delete a possible task."""
+    possible_task = get_object_or_404(PossibleTask, id=possible_task_id)
+
+    if request.member.family != possible_task.family:
+        return JsonResponse(
+            {"message": "You are not allowed to access this possible task."}, status=403
+        )
+
+    possible_task.delete()
+
+    reponse = JsonResponse(
+        {"message": "Possible task deleted successfully."}, status=200
+    )
+    reponse.set_cookie("auth_token", request.auth_token)
+
+    return reponse
