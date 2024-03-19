@@ -3,12 +3,10 @@ import json
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
-from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from pydantic import ValidationError
 
-from auth_api.auth_token import (CustomRequest, HeaderJwtToken,
-                                 login_token_required)
+from auth_api.auth_token import CustomRequest, HeaderJwtToken, login_token_required
 from auth_api.schemas import RegisterCreateSchema, RegisterInviteSchema
 from tasks_api.family.models import Family
 from tasks_api.invitation.models import Invitation
@@ -115,13 +113,14 @@ def register_with_invitation(request: HttpRequest):
 
 def logout(request: HttpRequest):
     response = JsonResponse({"message": "Logout successful"}, status=200)
-    response.delete_cookie("auth_token")
+    response.cookies.clear()
     return response
 
 
 """
 Routing for testing token authentication
 """
+
 
 @login_token_required
 def get_member_by_cookie(request: CustomRequest):
