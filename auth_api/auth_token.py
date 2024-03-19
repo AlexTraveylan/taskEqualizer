@@ -15,11 +15,7 @@ from tasks_api.member.models import Member
 
 load_dotenv()
 
-# get the secret key and get fakevalue for githubaction
-try:
-    SECRET_KEY = os.getenv("SECRET_KEY")
-except:
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 
 class HeaderJwtToken:
