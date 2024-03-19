@@ -1,5 +1,4 @@
 Django
 django-ninja
 PyJWT
-jwt
 python-dotenv
