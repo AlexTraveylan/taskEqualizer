@@ -21,9 +21,11 @@ SECRET_KEY = str(os.getenv("SECRET_KEY"))
 class HeaderJwtToken:
     """Class for the HeaderJwtToken object"""
 
-    def __init__(self, user_id: str):
+    def __init__(self, user_id: str, expiration: datetime.datetime = None):
         self.user_id = user_id
-        self.expiration = datetime.datetime.now() + datetime.timedelta(days=1)
+        self.expiration = expiration or (
+            datetime.datetime.now() + datetime.timedelta(days=1)
+        )
 
     def to_dict(self):
         """Convert the object to a dict"""
@@ -38,7 +40,15 @@ class HeaderJwtToken:
     @classmethod
     def from_dict(cls, data: dict):
         """Create a HeaderJwtToken object from a dict"""
-        return cls(user_id=data["user_id"])
+
+        expiration = data.get("expiration")
+        user_id = data["user_id"]
+
+        if expiration:
+            expiration_date = datetime.datetime.fromtimestamp(expiration)
+            return cls(user_id, expiration_date)
+
+        return cls(user_id)
 
     def to_jwt_token(self) -> str:
         """Create a jwt token from the object"""
@@ -50,7 +60,7 @@ class HeaderJwtToken:
         )
 
     @classmethod
-    def from_jwt_token(cls, token: str):
+    def from_jwt_token(cls, token: str) -> "HeaderJwtToken":
         """Create a HeaderJwtToken object from a jwt token"""
         data = jwt.decode(token, key=SECRET_KEY, algorithms=["HS256"])
         token = cls.from_dict(data)

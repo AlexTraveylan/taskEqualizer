@@ -90,23 +90,23 @@ class LoginTokenRequiredTestCase(TestCase):
 
         self.assertEqual(response_dict, {"message": "Unauthorized"})
 
-    # def test_login_token_required_with_expired_token(self):
+    def test_login_token_required_with_expired_token(self):
 
-    #     expired_token = HeaderJwtToken("test")
-    #     expired_token.expiration = datetime.datetime.now() - datetime.timedelta(days=1)
-    #     self.request.COOKIES = {"auth_token": expired_token.to_jwt_token()}
+        expired_token = HeaderJwtToken("test")
+        expired_token.expiration = datetime.datetime.now() - datetime.timedelta(hours=1)
+        self.request.COOKIES = {"auth_token": expired_token.to_jwt_token()}
 
-    #     @login_token_required
-    #     def dummy_view(request):
-    #         return JsonResponse({"message": "Success"})
+        @login_token_required
+        def dummy_view(request):
+            return JsonResponse({"message": "Success"})
 
-    #     response = dummy_view(self.request)
-    #     self.assertEqual(response.status_code, 401)
+        response = dummy_view(self.request)
+        self.assertEqual(response.status_code, 401)
 
-    #     response_content = response.content.decode("utf-8")
-    #     response_dict = json.loads(response_content)
+        response_content = response.content.decode("utf-8")
+        response_dict = json.loads(response_content)
 
-    #     self.assertEqual(response_dict, {"message": "Unauthorized"})
+        self.assertEqual(response_dict, {"message": "Unauthorized"})
 
     def test_login_token_required_with_invalid_user(self):
 
