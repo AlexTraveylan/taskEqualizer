@@ -13,5 +13,5 @@ env*/
 setup.cfg
 
 # bdd
-db*
+# db*
 migrations/
