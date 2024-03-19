@@ -6,7 +6,7 @@ from tasks_api.member.models import Member
 
 class MemberSchemaIn(Schema):
     member_name: str
-    family_id: int
+    family_id: str
 
 
 MemberSchemaOut = create_schema(Member)
