@@ -6,7 +6,7 @@ from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from pydantic import ValidationError
 
-from auth_api.auth_token import CustomRequest, HeaderJwtToken, login_token_required
+from auth_api.auth_token import HeaderJwtToken
 from auth_api.schemas import RegisterCreateSchema, RegisterInviteSchema
 from tasks_api.family.models import Family
 from tasks_api.invitation.models import Invitation
@@ -115,14 +115,3 @@ def logout(request: HttpRequest):
     response = JsonResponse({"message": "Logout successful"}, status=200)
     response.cookies.clear()
     return response
-
-
-"""
-Routing for testing token authentication
-"""
-
-
-@login_token_required
-def get_member_by_cookie(request: CustomRequest):
-
-    return JsonResponse({"member": request.member.to_dict()}, status=200)
