@@ -15,7 +15,7 @@ from tasks_api.member.models import Member
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 
 class HeaderJwtToken:
