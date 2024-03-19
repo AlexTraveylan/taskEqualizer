@@ -1,88 +1,62 @@
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
-from tasks_api.family.models import Family
 from tasks_api.family.schemas import FamilySchemaIn
 
 router = Router()
 
 
+@router.get("/members/", tags=["family"])
 @login_token_required
-@router.get("/{family_id}/members/", tags=["family"])
-def list_members_by_family(request: CustomRequest, family_id: int):
+def list_members_by_family(request: CustomRequest):
     """List all members by family."""
 
-    family = get_object_or_404(Family, id=family_id)
-
-    if request.member.family != family:
-        return JsonResponse(
-            {"message": "You are not allowed to access this family."}, status=403
-        )
+    family = request.member.family
 
     members = family.members.all()
-    members_dict = [member.to_dict() for member in members]
+    members_dict = list(members.values())
 
-    reponse = JsonResponse(members_dict, status=200)
+    reponse = JsonResponse(members_dict, safe=False, status=200)
     reponse.set_cookie("auth_token", request.auth_token)
 
     return reponse
 
 
-@login_token_required
 @router.get(
-    "/{family_id}/possibles_tasks/",
+    "/possibles_tasks/",
     tags=["family"],
 )
-def list_possibles_tasks_by_family(request: CustomRequest, family_id: int):
+@login_token_required
+def list_possibles_tasks_by_family(request: CustomRequest):
     """List all possible tasks by family."""
 
-    family = get_object_or_404(Family, id=family_id)
+    possible_tasks = request.member.family.possible_tasks.all()
+    possible_tasks_dict = list(possible_tasks.values())
 
-    if request.member.family != family:
-        return JsonResponse(
-            {"message": "You are not allowed to access this family."}, status=403
-        )
-
-    possible_tasks = family.possible_tasks.all()
-    possible_tasks_dict = [possible_task.to_dict() for possible_task in possible_tasks]
-
-    reponse = JsonResponse(possible_tasks_dict, status=200)
+    reponse = JsonResponse(possible_tasks_dict, safe=False, status=200)
     reponse.set_cookie("auth_token", request.auth_token)
 
     return reponse
 
 
+@router.get("/", tags=["family"])
 @login_token_required
-@router.get("/{family_id}", tags=["family"])
-def retrieve_family(request: CustomRequest, family_id: int):
+def retrieve_family(request: CustomRequest):
     """Retrieve a family."""
 
-    family = get_object_or_404(Family, id=family_id)
-
-    if request.member.family != family:
-        return JsonResponse(
-            {"message": "You are not allowed to access this family."}, status=403
-        )
-
-    response = JsonResponse(family.to_dict(), status=200)
+    response = JsonResponse(request.member.family.to_dict(), status=200)
     response.set_cookie("auth_token", request.auth_token)
 
     return response
 
 
+@router.put("/", tags=["family"])
 @login_token_required
-@router.put("/{family_id}", tags=["family"])
-def update_family(request: CustomRequest, family_id: int, payload: FamilySchemaIn):
+def update_family(request: CustomRequest, payload: FamilySchemaIn):
     """Update a family."""
 
-    family = get_object_or_404(Family, id=family_id)
-
-    if request.member.family != family:
-        return JsonResponse(
-            {"message": "You are not allowed to access this family."}, status=403
-        )
+    family = request.member.family
 
     for key, value in payload.dict().items():
         setattr(family, key, value)
@@ -95,18 +69,12 @@ def update_family(request: CustomRequest, family_id: int, payload: FamilySchemaI
     return reponse
 
 
+@router.delete("/", tags=["family"])
 @login_token_required
-@router.delete("/{family_id}", tags=["family"])
-def delete_family(request: CustomRequest, family_id: int):
+def delete_family(request: CustomRequest):
     """Delete a family."""
 
-    family = get_object_or_404(Family, id=family_id)
-
-    if request.member.family != family:
-        return JsonResponse(
-            {"message": "You are not allowed to access this family."}, status=403
-        )
-
-    family.delete()
+    request.member.family.delete()
+    request.delete_cookie("auth_token")
 
     return {"message": "Family deleted successfully."}

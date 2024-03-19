@@ -4,6 +4,7 @@ Module for the HeaderJwtToken class
 
 import datetime
 import os
+from functools import wraps
 
 import jwt
 from django.http import HttpRequest, JsonResponse
@@ -76,10 +77,24 @@ class CustomRequest(HttpRequest):
 
 
 def login_token_required(func_):
-    """Decorator to check if the user is logged in"""
+    """Decorator to check if the user is logged in
 
+    Put it before the route decorator like this:
+        @router.get("/", tags=["family"])
+        @login_token_required
+        def retrieve_family(request: CustomRequest):
+
+    Like this is not ok :
+        @login_token_required
+        @router.get("/", tags=["family"])
+        def retrieve_family(request: CustomRequest):
+    """
+
+    @wraps(func_)
     def wrapper(*args, **kwargs):
+
         request = args[0]
+
         auth_token = request.COOKIES.get("auth_token")
 
         # check if the token is present

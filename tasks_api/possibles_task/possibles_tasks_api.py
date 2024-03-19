@@ -9,17 +9,16 @@ from tasks_api.possibles_task.schemas import PossibleTaskSchemaIn
 router = Router()
 
 
-@login_token_required
 @router.post("/", tags=["possible_task"])
+@login_token_required
 def create_possible_task(request: CustomRequest, payload: PossibleTaskSchemaIn):
     """Create a possible task."""
 
-    if request.member.family.id != payload.family_id:
-        return JsonResponse(
-            {"message": "You are not allowed to access this family."}, status=403
-        )
+    family_id = request.member.family.id
 
-    new_possible_task = PossibleTask.objects.create(**payload.dict())
+    new_possible_task = PossibleTask.objects.create(
+        **payload.dict(), family_id=family_id
+    )
 
     reponse = JsonResponse(new_possible_task.to_dict(), status=201)
     reponse.set_cookie("auth_token", request.auth_token)
@@ -27,8 +26,8 @@ def create_possible_task(request: CustomRequest, payload: PossibleTaskSchemaIn):
     return reponse
 
 
-@login_token_required
 @router.put("/{possible_task_id}", tags=["possible_task"])
+@login_token_required
 def update_possible_task(
     request: CustomRequest, possible_task_id: int, payload: PossibleTaskSchemaIn
 ):
@@ -57,8 +56,8 @@ def update_possible_task(
     return reponse
 
 
-@login_token_required
 @router.delete("/{possible_task_id}", tags=["possible_task"])
+@login_token_required
 def delete_possible_task(request: CustomRequest, possible_task_id: int):
     """Delete a possible task."""
     possible_task = get_object_or_404(PossibleTask, id=possible_task_id)

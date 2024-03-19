@@ -7,7 +7,8 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from pydantic import ValidationError
 
-from auth_api.auth_token import HeaderJwtToken
+from auth_api.auth_token import (CustomRequest, HeaderJwtToken,
+                                 login_token_required)
 from auth_api.schemas import RegisterCreateSchema, RegisterInviteSchema
 from tasks_api.family.models import Family
 from tasks_api.invitation.models import Invitation
@@ -122,13 +123,7 @@ def logout(request: HttpRequest):
 Routing for testing token authentication
 """
 
+@login_token_required
+def get_member_by_cookie(request: CustomRequest):
 
-def get_member_by_cookie(request):
-    token = request.COOKIES.get("auth_token")
-    if not token:
-        return JsonResponse({"error": "No auth token provided"}, status=400)
-
-    member_id = HeaderJwtToken.from_jwt_token(token).user_id
-    member = get_object_or_404(Member, id=member_id)
-
-    return JsonResponse({"member_name": member.member_name}, status=200)
+    return JsonResponse({"member": request.member.to_dict()}, status=200)

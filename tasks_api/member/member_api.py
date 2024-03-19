@@ -11,7 +11,7 @@ router = Router()
 
 
 @router.get("/tasks/{member_id}", response=list[TaskSchemaOut], tags=["member"])
-def list_member_tasks(request: HttpRequest, member_id: int):
+def list_member_tasks(request: HttpRequest, member_id: str):
     """List all tasks for a member."""
     member = get_object_or_404(Member, id=member_id)
 
@@ -29,9 +29,9 @@ def retrieve_member(request: HttpRequest, member_id: str):
     return member
 
 
-@login_token_required
 @router.put("/{member_id}", tags=["member"])
-def update_member(request: CustomRequest, member_id: int, payload: MemberSchemaIn):
+@login_token_required
+def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaIn):
     """Update a member."""
 
     for key, value in payload.dict().items():
@@ -44,9 +44,9 @@ def update_member(request: CustomRequest, member_id: int, payload: MemberSchemaI
     return request.member
 
 
-@login_token_required
 @router.delete("/{member_id}", tags=["member"])
-def delete_member(request: CustomRequest, member_id: int):
+@login_token_required
+def delete_member(request: CustomRequest, member_id: str):
     """Delete a member."""
 
     request.member.delete()

@@ -8,8 +8,8 @@ from tasks_api.task.schemas import TaskSchemaIn, TaskSchemaOut
 router = Router()
 
 
-@login_token_required
 @router.post("/", tags=["task"])
+@login_token_required
 def create_task(request: CustomRequest, payload: TaskSchemaIn):
     """Create a task."""
 
@@ -33,8 +33,8 @@ def retrieve_task(request: HttpRequest, task_id: int):
     return task
 
 
-@login_token_required
 @router.put("/{task_id}", tags=["task"])
+@login_token_required
 def update_task(request: CustomRequest, task_id: int, payload: TaskSchemaIn):
     """Update a task."""
 
@@ -56,8 +56,8 @@ def update_task(request: CustomRequest, task_id: int, payload: TaskSchemaIn):
     return response
 
 
-@login_token_required
 @router.delete("/{task_id}", tags=["task"])
+@login_token_required
 def delete_task(request: CustomRequest, task_id: int):
     """Delete a task."""
 
