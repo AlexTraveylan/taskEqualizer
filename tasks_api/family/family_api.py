@@ -75,6 +75,8 @@ def delete_family(request: CustomRequest):
     """Delete a family."""
 
     request.member.family.delete()
-    request.delete_cookie("auth_token")
 
-    return {"message": "Family deleted successfully."}
+    response = JsonResponse({"message": "Family deleted successfully."}, status=200)
+    response.cookies.clear()
+
+    return response

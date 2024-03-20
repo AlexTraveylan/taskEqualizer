@@ -22,7 +22,7 @@ class HeaderJwtToken:
     """Class for the HeaderJwtToken object"""
 
     def __init__(self, user_id: str, expiration: datetime.datetime = None):
-        self.user_id = user_id
+        self.user_id = str(user_id)
         self.expiration = expiration or (
             datetime.datetime.now() + datetime.timedelta(days=1)
         )
