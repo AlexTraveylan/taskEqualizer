@@ -23,10 +23,7 @@ def list_members_by_family(request: CustomRequest):
     return reponse
 
 
-@router.get(
-    "/possibles_tasks/",
-    tags=["family"],
-)
+@router.get("/possibles_tasks/", tags=["family"])
 @login_token_required
 def list_possibles_tasks_by_family(request: CustomRequest):
     """List all possible tasks by family."""
@@ -58,8 +55,7 @@ def update_family(request: CustomRequest, payload: FamilySchemaIn):
 
     family = request.member.family
 
-    for key, value in payload.dict().items():
-        setattr(family, key, value)
+    family.family_name = payload.family_name
 
     family.save()
 
@@ -76,7 +72,7 @@ def delete_family(request: CustomRequest):
 
     request.member.family.delete()
 
-    response = JsonResponse({"message": "Family deleted successfully."}, status=200)
+    response = JsonResponse({"message": "Family deleted successfully."}, status=204)
     response.cookies.clear()
 
     return response
