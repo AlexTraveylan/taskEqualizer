@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 from django.http import HttpRequest, JsonResponse
 from ninja import Router
 
@@ -13,19 +15,18 @@ router = Router()
 def create_task(request: CustomRequest, payload: TaskSchemaIn):
     """Create a task."""
 
-    if request.member.id != payload.member_id:
-        return JsonResponse({"message": "Invalid member_id"}, status=400)
+    new_task = Task.objects.create(
+        related_possible_task_id=payload.related_possible_task_id, member=request.member
+    )
 
-    new_task = Task.objects.create(**payload.dict())
-
-    response = JsonResponse(new_task.dict(), status=201)
+    response = JsonResponse(new_task.to_dict(), status=201)
     response.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return response
 
 
 @router.get("/{task_id}", response=TaskSchemaOut, tags=["task"])
-def retrieve_task(request: HttpRequest, task_id: int):
+def retrieve_task(request: HttpRequest, task_id: str):
     """Retrieve a task."""
 
     task = Task.objects.get(id=task_id)
@@ -35,7 +36,7 @@ def retrieve_task(request: HttpRequest, task_id: int):
 
 @router.put("/{task_id}", tags=["task"])
 @login_token_required
-def update_task(request: CustomRequest, task_id: int, payload: TaskSchemaIn):
+def update_task(request: CustomRequest, task_id: str):
     """Update a task."""
 
     task = Task.objects.get(id=task_id)
@@ -45,12 +46,10 @@ def update_task(request: CustomRequest, task_id: int, payload: TaskSchemaIn):
             {"message": "You are not allowed to access this task."}, status=403
         )
 
-    for key, value in payload.dict().items():
-        setattr(task, key, value)
-
+    task.ended_at = datetime.now(timezone.utc)
     task.save()
 
-    response = JsonResponse(task.dict(), status=200)
+    response = JsonResponse(task.to_dict(), status=200)
     response.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return response
@@ -58,7 +57,7 @@ def update_task(request: CustomRequest, task_id: int, payload: TaskSchemaIn):
 
 @router.delete("/{task_id}", tags=["task"])
 @login_token_required
-def delete_task(request: CustomRequest, task_id: int):
+def delete_task(request: CustomRequest, task_id: str):
     """Delete a task."""
 
     task = Task.objects.get(id=task_id)
@@ -69,7 +68,7 @@ def delete_task(request: CustomRequest, task_id: int):
 
     task.delete()
 
-    response = JsonResponse({"message": "Task deleted"}, status=200)
+    response = JsonResponse({"message": "Task deleted"}, status=204)
     response.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return response

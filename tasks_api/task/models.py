@@ -18,10 +18,12 @@ class Task(models.Model):
     @property
     def duration(self):
         """Calculate the duration of the task in seconds."""
+        if not self.ended_at:
+            return 0
+
         total_seconds = (self.ended_at - self.created_at).total_seconds()
 
-        # I supose that a task can't last more than 10_000 seconds
-        return total_seconds if total_seconds < 10_000 else 0
+        return total_seconds < 10_000
 
     def to_dict(self):
         return {

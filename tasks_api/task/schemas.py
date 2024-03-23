@@ -5,8 +5,7 @@ from tasks_api.task.models import Task
 
 
 class TaskSchemaIn(Schema):
-    related_possible_task_id: int
-    member_id: int
+    related_possible_task_id: str
 
 
 TaskSchemaOut = create_schema(Task)
