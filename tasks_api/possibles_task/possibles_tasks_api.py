@@ -29,14 +29,9 @@ def create_possible_task(request: CustomRequest, payload: PossibleTaskSchemaIn):
 @router.put("/{possible_task_id}", tags=["possible_task"])
 @login_token_required
 def update_possible_task(
-    request: CustomRequest, possible_task_id: int, payload: PossibleTaskSchemaIn
+    request: CustomRequest, possible_task_id: str, payload: PossibleTaskSchemaIn
 ):
     """Update a possible task."""
-
-    if request.member.family.id != payload.family_id:
-        return JsonResponse(
-            {"message": "You are not allowed to access this family."}, status=403
-        )
 
     possible_task = get_object_or_404(PossibleTask, id=possible_task_id)
 
@@ -58,7 +53,7 @@ def update_possible_task(
 
 @router.delete("/{possible_task_id}", tags=["possible_task"])
 @login_token_required
-def delete_possible_task(request: CustomRequest, possible_task_id: int):
+def delete_possible_task(request: CustomRequest, possible_task_id: str):
     """Delete a possible task."""
     possible_task = get_object_or_404(PossibleTask, id=possible_task_id)
 
@@ -70,7 +65,7 @@ def delete_possible_task(request: CustomRequest, possible_task_id: int):
     possible_task.delete()
 
     reponse = JsonResponse(
-        {"message": "Possible task deleted successfully."}, status=200
+        {"message": "Possible task deleted successfully."}, status=204
     )
     reponse.set_cookie("auth_token", request.auth_token, httponly=True)
 
