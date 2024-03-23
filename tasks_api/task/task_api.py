@@ -19,7 +19,7 @@ def create_task(request: CustomRequest, payload: TaskSchemaIn):
     new_task = Task.objects.create(**payload.dict())
 
     response = JsonResponse(new_task.dict(), status=201)
-    response.set_cookie("auth_token", request.auth_token)
+    response.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return response
 
@@ -51,7 +51,7 @@ def update_task(request: CustomRequest, task_id: int, payload: TaskSchemaIn):
     task.save()
 
     response = JsonResponse(task.dict(), status=200)
-    response.set_cookie("auth_token", request.auth_token)
+    response.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return response
 
@@ -70,6 +70,6 @@ def delete_task(request: CustomRequest, task_id: int):
     task.delete()
 
     response = JsonResponse({"message": "Task deleted"}, status=200)
-    response.set_cookie("auth_token", request.auth_token)
+    response.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return response

@@ -39,7 +39,7 @@ def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaI
 
     request.member.save()
     response = JsonResponse({"message": "Member updated successfully."}, status=200)
-    response.set_cookie("auth_token", request.auth_token)
+    response.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return request.member
 

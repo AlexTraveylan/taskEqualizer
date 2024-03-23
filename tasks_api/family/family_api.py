@@ -18,7 +18,7 @@ def list_members_by_family(request: CustomRequest):
     members_dict = list(members.values())
 
     reponse = JsonResponse(members_dict, safe=False, status=200)
-    reponse.set_cookie("auth_token", request.auth_token)
+    reponse.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return reponse
 
@@ -32,7 +32,7 @@ def list_possibles_tasks_by_family(request: CustomRequest):
     possible_tasks_dict = list(possible_tasks.values())
 
     reponse = JsonResponse(possible_tasks_dict, safe=False, status=200)
-    reponse.set_cookie("auth_token", request.auth_token)
+    reponse.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return reponse
 
@@ -60,7 +60,7 @@ def update_family(request: CustomRequest, payload: FamilySchemaIn):
     family.save()
 
     reponse = JsonResponse({"message": "Family updated successfully."}, status=200)
-    reponse.set_cookie("auth_token", request.auth_token)
+    reponse.set_cookie("auth_token", request.auth_token, httponly=True)
 
     return reponse
 

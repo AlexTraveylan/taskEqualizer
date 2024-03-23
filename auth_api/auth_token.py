@@ -82,8 +82,8 @@ class CustomRequest(HttpRequest):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.member: Member | None = None
-        self.auth_token: str | None = None
+        self.member: Member = None
+        self.auth_token: str = None
 
 
 def login_token_required(func_):

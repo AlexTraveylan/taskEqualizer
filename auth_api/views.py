@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.contrib.auth import authenticate
@@ -26,7 +27,7 @@ def login(request: HttpRequest):
         member = Member.objects.filter(member_name=user.username).first()
         response = JsonResponse({"message": "Login successful"}, status=200)
         token = HeaderJwtToken(user_id=member.id)
-        response.set_cookie("auth_token", token.to_jwt_token())
+        response.set_cookie("auth_token", token.to_jwt_token(), httponly=True)
         return response
     else:
         return JsonResponse({"message": "Invalid credentials"}, status=401)
@@ -63,7 +64,7 @@ def register_create_family(request: HttpRequest):
     member = Member.objects.create(member_name=user.username, family=family)
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse({"message": "User created"}, status=201)
-    response.set_cookie("auth_token", token.to_jwt_token())
+    response.set_cookie("auth_token", token.to_jwt_token(), httponly=True)
 
     return response
 
@@ -82,31 +83,45 @@ def register_with_invitation(request: HttpRequest):
         "invitation_code": data.get("invitation_code"),
     }
 
+    # Check if the data is correct
     parsed_data: RegisterInviteSchema | None = None
     try:
         parsed_data = RegisterInviteSchema(**data_used)
     except ValidationError as e:
         return JsonResponse({"message": "Missing informations"}, status=400)
 
+    # Check if the username already exists
     user = User.objects.filter(username=parsed_data.username).first()
     if user:
         return JsonResponse({"message": "Username already exists"}, status=400)
 
-    invitation = Invitation.objects.filter(
-        code=parsed_data.invitation_code, is_used=False
-    ).first()
+    # Get the invitation
+    invitation = Invitation.objects.filter(code=parsed_data.invitation_code).first()
+
     if not invitation:
         return JsonResponse({"message": "Invalid invitation code"}, status=400)
 
-    family = invitation.family
+    if invitation.is_used:
+        return JsonResponse({"message": "Invitation already used"}, status=400)
 
+    if datetime.now() > invitation.expired_at:
+        return JsonResponse({"message": "Invitation expired"}, status=400)
+
+    # Create the user
+    family = invitation.family
     user = User.objects.create_user(
         username=parsed_data.username, password=parsed_data.password
     )
     member = Member.objects.create(member_name=user.username, family=family)
+
+    # Mark the invitation as used
+    invitation.is_used = True
+    invitation.save()
+
+    # Create the token
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse({"message": "User created"}, status=201)
-    response.set_cookie("auth_token", token.to_jwt_token())
+    response.set_cookie("auth_token", token.to_jwt_token(), httponly=True)
 
     return response
 
