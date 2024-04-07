@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "tasks_api.apps.TasksApiConfig",
     "ninja",
     "auth_api",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -47,6 +48,7 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -127,3 +129,6 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Default field to exclude from the schemas
 STANDARD_EXCLUDE = ["id", "created_at", "updated_at"]
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_ALLOW_CREDENTIALS = True

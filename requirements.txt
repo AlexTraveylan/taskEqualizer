@@ -2,3 +2,4 @@ Django
 django-ninja
 PyJWT
 python-dotenv
+django-cors-headers 
