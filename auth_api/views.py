@@ -128,5 +128,5 @@ def register_with_invitation(request: HttpRequest):
 
 def logout(request: HttpRequest):
     response = JsonResponse({"message": "Logout successful"}, status=200)
-    response.cookies.clear()
+    response.delete_cookie("auth_token")
     return response

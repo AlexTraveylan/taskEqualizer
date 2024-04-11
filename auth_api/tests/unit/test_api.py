@@ -136,7 +136,7 @@ def test_logout():
     response = logout(request)
 
     assert response.status_code == 200
-    assert "auth_token" not in response.cookies
+    assert response.cookies["auth_token"].value == ""
 
     json_data = json.loads(response.content.decode("utf-8"))
     assert json_data["message"] == "Logout successful"
