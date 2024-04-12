@@ -116,7 +116,10 @@ def login_token_required(func_):
 
         # check if the token is expired
         if decoded_token.is_expired():
-            return JsonResponse({"message": "Unauthorized"}, status=401)
+            response = JsonResponse({"message": "Unauthorized"}, status=401)
+            response.delete_cookie("auth_token")
+
+            return response
 
         # get the user from the token
         member = get_object_or_404(Member, id=decoded_token.user_id)
