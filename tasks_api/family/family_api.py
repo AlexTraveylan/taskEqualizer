@@ -23,7 +23,7 @@ def list_members_by_family(request: CustomRequest):
     return reponse
 
 
-@router.get("/possibles_tasks/", tags=["family"])
+@router.get("/possible_tasks/", tags=["family"])
 @login_token_required
 def list_possibles_tasks_by_family(request: CustomRequest):
     """List all possible tasks by family."""
