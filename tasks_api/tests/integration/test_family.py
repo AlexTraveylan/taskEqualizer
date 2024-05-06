@@ -7,7 +7,6 @@ from tasks_api.models import Family, Member, PossibleTask, Task
 
 @pytest.mark.django_db
 def test_list_members_by_family(client, data_test):
-
     headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
 
     response = client.get("/api/family/members/", headers=headers)
@@ -22,7 +21,6 @@ def test_list_members_by_family(client, data_test):
 
 @pytest.mark.django_db
 def test_list_members_by_family_with_two_members(client, data_test):
-
     new_member = Member.objects.create(
         member_name="Test Member 2", family=data_test.family
     )
@@ -42,10 +40,9 @@ def test_list_members_by_family_with_two_members(client, data_test):
 
 @pytest.mark.django_db
 def test_list_possibles_tasks_by_family(client, data_test):
-
     headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
 
-    response = client.get("/api/family/possibles_tasks/", headers=headers)
+    response = client.get("/api/family/possible_tasks/", headers=headers)
 
     assert response.status_code == 200
 
@@ -57,7 +54,6 @@ def test_list_possibles_tasks_by_family(client, data_test):
 
 @pytest.mark.django_db
 def test_list_possibles_tasks_by_family_with_two_possible_tasks(client, data_test):
-
     new_possible_task = PossibleTask.objects.create(
         possible_task_name="Test Task 2",
         description="Task created for tests",
@@ -66,7 +62,7 @@ def test_list_possibles_tasks_by_family_with_two_possible_tasks(client, data_tes
 
     headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
 
-    response = client.get("/api/family/possibles_tasks/", headers=headers)
+    response = client.get("/api/family/possible_tasks/", headers=headers)
 
     assert response.status_code == 200
 
@@ -79,7 +75,6 @@ def test_list_possibles_tasks_by_family_with_two_possible_tasks(client, data_tes
 
 @pytest.mark.django_db
 def test_update_family(client, data_test):
-
     headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
 
     payload = {"family_name": "New Family Name"}
@@ -95,7 +90,6 @@ def test_update_family(client, data_test):
 
 @pytest.mark.django_db
 def test_delete_family(client, data_test):
-
     headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
 
     response = client.delete("/api/family/", headers=headers)
