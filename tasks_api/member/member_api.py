@@ -29,6 +29,17 @@ def retrieve_member(request: HttpRequest, member_id: str):
     return member
 
 
+@router.get("/", tags=["member"])
+@login_token_required
+def who_i_am(request: CustomRequest):
+    """Display actual member"""
+
+    response = JsonResponse({"name": request.member.member_name}, status=200)
+    response.set_cookie("auth_token", request.auth_token, httponly=True)
+
+    return response
+
+
 @router.put("/{member_id}", tags=["member"])
 @login_token_required
 def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaIn):
@@ -41,7 +52,7 @@ def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaI
     response = JsonResponse({"message": "Member updated successfully."}, status=200)
     response.set_cookie("auth_token", request.auth_token, httponly=True)
 
-    return request.member
+    return response
 
 
 @router.delete("/{member_id}", tags=["member"])
@@ -51,7 +62,7 @@ def delete_member(request: CustomRequest, member_id: str):
 
     request.member.delete()
 
-    reponse = JsonResponse({"message": "Member deleted successfully."}, status=200)
-    reponse.delete_cookie("auth_token")
+    response = JsonResponse({"message": "Member deleted successfully."}, status=200)
+    response.delete_cookie("auth_token")
 
-    return reponse
+    return response
