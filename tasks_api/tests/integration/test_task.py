@@ -36,9 +36,14 @@ def test_create_task(client, data_test):
 def test_retrieve_task(client, data_test):
     """Test the retrieval of a task."""
 
+    # We need to send the auth_token in the headers
+    headers = {
+        "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
+    }
     response = client.get(
-        f"/api/task/{data_test.task.id}",
+        "/api/task/",
         content_type="application/json",
+        headers=headers,
     )
 
     assert response.status_code == 200

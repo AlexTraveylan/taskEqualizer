@@ -25,13 +25,20 @@ def create_task(request: CustomRequest, payload: TaskSchemaIn):
     return response
 
 
-@router.get("/{task_id}", response=TaskSchemaOut, tags=["task"])
-def retrieve_task(request: HttpRequest, task_id: str):
+@router.get("/", tags=["task"])
+@login_token_required
+def get_current_task(request: CustomRequest):
     """Retrieve a task."""
 
-    task = Task.objects.get(id=task_id)
+    current_task = Task.objects.filter(member=request.member, ended_at=None).last()
 
-    return task
+    if current_task is None:
+        return JsonResponse({"message": "No task found"}, status=404)
+
+    response = JsonResponse(current_task.to_dict(), status=200)
+    response.set_cookie("auth_token", request.auth_token, httponly=True)
+
+    return response
 
 
 @router.put("/{task_id}", tags=["task"])
