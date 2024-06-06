@@ -1,11 +1,11 @@
 from datetime import datetime, timezone
 
-from django.http import HttpRequest, JsonResponse
+from django.http import JsonResponse
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
 from tasks_api.task.models import Task
-from tasks_api.task.schemas import TaskSchemaIn, TaskSchemaOut
+from tasks_api.task.schemas import TaskSchemaIn
 
 router = Router()
 
