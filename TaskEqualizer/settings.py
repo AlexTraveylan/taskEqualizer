@@ -132,3 +132,6 @@ STANDARD_EXCLUDE = ["id", "created_at", "updated_at"]
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
 CORS_ALLOW_CREDENTIALS = True
+
+
+MAX_SECOND_FOR_TASK = 60 * 60 * 2

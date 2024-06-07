@@ -1,9 +1,11 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from django.http import JsonResponse
+from django.utils import timezone
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
+from TaskEqualizer.settings import MAX_SECOND_FOR_TASK
 from tasks_api.task.models import Task
 from tasks_api.task.schemas import TaskSchemaIn
 
@@ -30,9 +32,18 @@ def create_task(request: CustomRequest, payload: TaskSchemaIn):
 def get_current_task(request: CustomRequest):
     """Retrieve a task."""
 
-    current_task = Task.objects.filter(member=request.member, ended_at=None).last()
+    current_task = (
+        Task.objects.select_related("member")
+        .filter(member=request.member, ended_at=None)
+        .last()
+    )
 
     if current_task is None:
+        return JsonResponse({"message": "No task found"}, status=404)
+
+    seconds_from_start = (timezone.now() - current_task.created_at).seconds
+    if MAX_SECOND_FOR_TASK < seconds_from_start:
+        current_task.delete()
         return JsonResponse({"message": "No task found"}, status=404)
 
     response = JsonResponse(current_task.to_dict(), status=200)
