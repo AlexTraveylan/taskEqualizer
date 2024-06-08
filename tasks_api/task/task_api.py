@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.http import JsonResponse
 from django.utils import timezone
 from ninja import Router
@@ -64,7 +62,7 @@ def update_task(request: CustomRequest, task_id: str):
             {"message": "You are not allowed to access this task."}, status=403
         )
 
-    task.ended_at = datetime.now(timezone.utc)
+    task.ended_at = timezone.now()
     task.save()
 
     response = JsonResponse(task.to_dict(), status=200)
