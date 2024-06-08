@@ -27,7 +27,13 @@ def login(request: HttpRequest):
         member = Member.objects.filter(member_name=user.username).first()
         response = JsonResponse({"message": "Login successful"}, status=200)
         token = HeaderJwtToken(user_id=member.id)
-        response.set_cookie("auth_token", token.to_jwt_token(), httponly=True)
+        response.set_cookie(
+            "auth_token",
+            token.to_jwt_token(),
+            httponly=True,
+            secure=True,
+            samesite=None,
+        )
         return response
     else:
         return JsonResponse({"message": "Invalid credentials"}, status=401)
@@ -50,7 +56,7 @@ def register_create_family(request: HttpRequest):
     parsed_data: RegisterCreateSchema | None = None
     try:
         parsed_data = RegisterCreateSchema(**data_used)
-    except ValidationError as e:
+    except ValidationError:
         return JsonResponse({"message": "Missing informations"}, status=400)
 
     user = User.objects.filter(username=parsed_data.username).first()
@@ -64,7 +70,9 @@ def register_create_family(request: HttpRequest):
     member = Member.objects.create(member_name=user.username, family=family)
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse({"message": "User created"}, status=201)
-    response.set_cookie("auth_token", token.to_jwt_token(), httponly=True)
+    response.set_cookie(
+        "auth_token", token.to_jwt_token(), httponly=True, secure=True, samesite=None
+    )
 
     return response
 
@@ -87,7 +95,7 @@ def register_with_invitation(request: HttpRequest):
     parsed_data: RegisterInviteSchema | None = None
     try:
         parsed_data = RegisterInviteSchema(**data_used)
-    except ValidationError as e:
+    except ValidationError:
         return JsonResponse({"message": "Missing informations"}, status=400)
 
     # Check if the username already exists
@@ -121,7 +129,9 @@ def register_with_invitation(request: HttpRequest):
     # Create the token
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse({"message": "User created"}, status=201)
-    response.set_cookie("auth_token", token.to_jwt_token(), httponly=True)
+    response.set_cookie(
+        "auth_token", token.to_jwt_token(), httponly=True, secure=True, samesite=None
+    )
 
     return response
 

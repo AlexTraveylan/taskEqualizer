@@ -20,7 +20,9 @@ def create_task(request: CustomRequest, payload: TaskSchemaIn):
     )
 
     response = JsonResponse(new_task.to_dict(), status=201)
-    response.set_cookie("auth_token", request.auth_token, httponly=True)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
     return response
 
@@ -39,13 +41,16 @@ def get_current_task(request: CustomRequest):
     if current_task is None:
         return JsonResponse({"message": "No task found"}, status=404)
 
-    seconds_from_start = (timezone.now() - current_task.created_at).seconds
-    if MAX_SECOND_FOR_TASK < seconds_from_start:
+    seconds_from_start = (timezone.now() - current_task.created_at).total_seconds()
+    print(seconds_from_start, MAX_SECOND_FOR_TASK)
+    if seconds_from_start > MAX_SECOND_FOR_TASK:
         current_task.delete()
         return JsonResponse({"message": "No task found"}, status=404)
 
     response = JsonResponse(current_task.to_dict(), status=200)
-    response.set_cookie("auth_token", request.auth_token, httponly=True)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
     return response
 
@@ -66,7 +71,9 @@ def update_task(request: CustomRequest, task_id: str):
     task.save()
 
     response = JsonResponse(task.to_dict(), status=200)
-    response.set_cookie("auth_token", request.auth_token, httponly=True)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
     return response
 
@@ -85,6 +92,8 @@ def delete_task(request: CustomRequest, task_id: str):
     task.delete()
 
     response = JsonResponse({"message": "Task deleted"}, status=204)
-    response.set_cookie("auth_token", request.auth_token, httponly=True)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
     return response

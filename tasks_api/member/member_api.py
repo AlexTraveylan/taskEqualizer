@@ -35,7 +35,9 @@ def who_i_am(request: CustomRequest):
     """Display actual member"""
 
     response = JsonResponse({"name": request.member.member_name}, status=200)
-    response.set_cookie("auth_token", request.auth_token, httponly=True)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
     return response
 
@@ -50,7 +52,9 @@ def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaI
 
     request.member.save()
     response = JsonResponse({"message": "Member updated successfully."}, status=200)
-    response.set_cookie("auth_token", request.auth_token, httponly=True)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
     return response
 

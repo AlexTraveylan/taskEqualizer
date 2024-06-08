@@ -17,10 +17,12 @@ def list_members_by_family(request: CustomRequest):
     members = family.members.all()
     members_dict = list(members.values())
 
-    reponse = JsonResponse(members_dict, safe=False, status=200)
-    reponse.set_cookie("auth_token", request.auth_token, httponly=True)
+    response = JsonResponse(members_dict, safe=False, status=200)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
-    return reponse
+    return response
 
 
 @router.get("/possible_tasks/", tags=["family"])
@@ -31,10 +33,12 @@ def list_possibles_tasks_by_family(request: CustomRequest):
     possible_tasks = request.member.family.possible_tasks.all()
     possible_tasks_dict = list(possible_tasks.values())
 
-    reponse = JsonResponse(possible_tasks_dict, safe=False, status=200)
-    reponse.set_cookie("auth_token", request.auth_token, httponly=True)
+    response = JsonResponse(possible_tasks_dict, safe=False, status=200)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
-    return reponse
+    return response
 
 
 @router.get("/", tags=["family"])
@@ -43,7 +47,9 @@ def retrieve_family(request: CustomRequest):
     """Retrieve a family."""
 
     response = JsonResponse(request.member.family.to_dict(), status=200)
-    response.set_cookie("auth_token", request.auth_token)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
     return response
 
@@ -59,10 +65,12 @@ def update_family(request: CustomRequest, payload: FamilySchemaIn):
 
     family.save()
 
-    reponse = JsonResponse({"message": "Family updated successfully."}, status=200)
-    reponse.set_cookie("auth_token", request.auth_token, httponly=True)
+    response = JsonResponse({"message": "Family updated successfully."}, status=200)
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
 
-    return reponse
+    return response
 
 
 @router.delete("/", tags=["family"])
