@@ -62,7 +62,7 @@ def update_task(request: CustomRequest, task_id: str):
 
     task = Task.objects.get(id=task_id)
 
-    if request.member != task.member:
+    if request.member != task.member or task.ended_at is not None:
         return JsonResponse(
             {"message": "You are not allowed to access this task."}, status=403
         )
