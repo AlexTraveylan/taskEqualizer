@@ -1,6 +1,8 @@
 import json
+from uuid import UUID
 
 import pytest
+from django.utils import timezone
 
 from tasks_api.models import Task
 
@@ -78,6 +80,7 @@ def test_update_task(client, data_test):
     task = Task.objects.get(id=data_test.task.id)
 
     assert task.ended_at != 0
+    assert task.duration_in_seconds == 1
 
 
 @pytest.mark.django_db
@@ -100,3 +103,62 @@ def test_delete_task(client, data_test):
     task = Task.objects.all()
 
     assert len(task) == 0
+
+
+@pytest.mark.django_db
+def test_clean_tasks(client, data_test):
+    """Test the cleaning of tasks."""
+
+    # We need to send the auth_token in the headers
+    headers = {
+        "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
+    }
+
+    # data_test.task should not be deleted
+
+    # should be deleted, task forgotten
+    task_1 = Task.objects.create(
+        id=UUID("00000000-0000-0000-0000-000000000001"),
+        related_possible_task=data_test.possible_task,
+        member=data_test.member,
+        ended_at=None,
+        duration_in_seconds=0,
+    )
+    task_1.created_at = timezone.now() - timezone.timedelta(days=5)
+    task_1.save()
+
+    # should not be deleted, task in duration
+    task_2 = Task.objects.create(
+        id=UUID("00000000-0000-0000-0000-000000000002"),
+        related_possible_task=data_test.possible_task,
+        member=data_test.member,
+        ended_at=timezone.now()
+        - timezone.timedelta(days=5)
+        + timezone.timedelta(hours=1),
+        duration_in_seconds=3600,  # <2h
+    )
+    task_2.created_at = timezone.now() - timezone.timedelta(days=5)
+    task_2.save()
+
+    # should be deleted, task to long
+    task_3 = Task.objects.create(
+        id=UUID("00000000-0000-0000-0000-000000000003"),
+        related_possible_task=data_test.possible_task,
+        member=data_test.member,
+        ended_at=timezone.now() - timezone.timedelta(days=3),
+        duration_in_seconds=0,
+    )
+    task_3.created_at = timezone.now() - timezone.timedelta(days=5)
+    task_3.save()
+
+    response = client.get(
+        "/api/task/clean",
+        headers=headers,
+        content_type="application/json",
+    )
+
+    assert response.status_code == 200
+
+    # Check if the task has been deleted
+    tasks = Task.objects.all()
+    assert len(tasks) == 2

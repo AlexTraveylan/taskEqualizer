@@ -1,6 +1,11 @@
+import math
 import uuid
+from datetime import date
 
 from django.db import models
+from django.utils import timezone
+
+from TaskEqualizer.settings import MAX_SECOND_FOR_TASK
 
 
 class Task(models.Model):
@@ -14,16 +19,19 @@ class Task(models.Model):
     ended_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
     member = models.ForeignKey("Member", on_delete=models.CASCADE, related_name="tasks")
+    duration_in_seconds = models.IntegerField(default=0)
 
-    @property
-    def duration(self):
-        """Calculate the duration of the task in seconds."""
-        if not self.ended_at:
+    def duration(self, until: date) -> int:
+        """Return the duration of the task in seconds from the creation to a given date."""
+        if not until:
             return 0
 
-        total_seconds = (self.ended_at - self.created_at).total_seconds()
+        total_seconds = (until - self.created_at).total_seconds()
 
-        return total_seconds < 10_000
+        if total_seconds > MAX_SECOND_FOR_TASK:  # 2h
+            return 0
+
+        return math.ceil(total_seconds)
 
     def to_dict(self):
         return {
@@ -33,8 +41,18 @@ class Task(models.Model):
             "ended_at": self.ended_at,
             "updated_at": self.updated_at,
             "member": self.member.id,
-            "duration": self.duration,
+            "duration": self.duration_in_seconds,
         }
+
+    def __str__(self):
+        return ", ".join([f"{key}={value}" for key, value in self.to_dict().items()])
+
+    def is_not_current(self) -> bool:
+        date_now = timezone.now()
+        return self.ended_at is None and self.duration(date_now) == 0
+
+    def is_invalid(self) -> bool:
+        return self.ended_at is not None and self.duration_in_seconds == 0
 
     class Meta:
         """Meta class for the Task model."""

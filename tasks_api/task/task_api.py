@@ -55,6 +55,31 @@ def get_current_task(request: CustomRequest):
     return response
 
 
+@router.get("/clean", tags=["task"])
+@login_token_required
+def clean_invalid_tasks(request: CustomRequest):
+    """Clean invalid tasks."""
+
+    tasks = Task.objects.filter(member=request.member)
+
+    tasks_to_delete = [
+        task for task in tasks if task.is_not_current() or task.is_invalid()
+    ]
+
+    for task in tasks_to_delete:
+        task.delete()
+
+    response = JsonResponse(
+        {"message": f"{len(tasks_to_delete)} tasks cleaned"}, status=200
+    )
+
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
+
+    return response
+
+
 @router.put("/{task_id}", tags=["task"])
 @login_token_required
 def update_task(request: CustomRequest, task_id: str):
@@ -68,6 +93,7 @@ def update_task(request: CustomRequest, task_id: str):
         )
 
     task.ended_at = timezone.now()
+    task.duration_in_seconds = task.duration(task.ended_at)
     task.save()
 
     response = JsonResponse(task.to_dict(), status=200)
