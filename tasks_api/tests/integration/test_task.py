@@ -151,13 +151,13 @@ def test_clean_tasks(client, data_test):
     task_3.created_at = timezone.now() - timezone.timedelta(days=5)
     task_3.save()
 
-    response = client.get(
+    response = client.delete(
         "/api/task/clean",
         headers=headers,
         content_type="application/json",
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 204
 
     # Check if the task has been deleted
     tasks = Task.objects.all()

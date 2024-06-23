@@ -3,7 +3,6 @@ from django.utils import timezone
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
-from TaskEqualizer.settings import MAX_SECOND_FOR_TASK
 from tasks_api.task.models import Task
 from tasks_api.task.schemas import TaskSchemaIn
 
@@ -39,15 +38,17 @@ def get_current_task(request: CustomRequest):
     )
 
     if current_task is None:
-        return JsonResponse({"message": "No task found"}, status=404)
+        response = JsonResponse({"message": "No task found"}, status=404)
 
-    seconds_from_start = (timezone.now() - current_task.created_at).total_seconds()
-    print(seconds_from_start, MAX_SECOND_FOR_TASK)
-    if seconds_from_start > MAX_SECOND_FOR_TASK:
-        current_task.delete()
-        return JsonResponse({"message": "No task found"}, status=404)
+    elif current_task.is_invalid():
+        response = JsonResponse({"message": "Task is invalid"}, status=400)
 
-    response = JsonResponse(current_task.to_dict(), status=200)
+    elif current_task.is_not_current():
+        response = JsonResponse({"message": "Task is not current"}, status=400)
+
+    else:
+        response = JsonResponse(current_task.to_dict(), status=200)
+
     response.set_cookie(
         "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
     )
@@ -55,7 +56,7 @@ def get_current_task(request: CustomRequest):
     return response
 
 
-@router.get("/clean", tags=["task"])
+@router.delete("/clean", tags=["task"])
 @login_token_required
 def clean_invalid_tasks(request: CustomRequest):
     """Clean invalid tasks."""
@@ -70,7 +71,7 @@ def clean_invalid_tasks(request: CustomRequest):
         task.delete()
 
     response = JsonResponse(
-        {"message": f"{len(tasks_to_delete)} tasks cleaned"}, status=200
+        {"message": f"{len(tasks_to_delete)} tasks cleaned"}, status=204
     )
 
     response.set_cookie(
