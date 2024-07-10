@@ -64,7 +64,7 @@ def get_tasks_by_members(request: CustomRequest):
     response = JsonResponse(
         {
             "data": [
-                {str(member.id): [task.to_dict() for task in member.tasks.all()]}
+                {member.member_name: [task.to_dict() for task in member.tasks.all()]}
                 for member in members
             ]
         },
