@@ -106,3 +106,19 @@ def test_delete_family(client, data_test):
     assert member is None
     assert possible_task is None
     assert task is None
+
+
+@pytest.mark.django_db
+def test_get_tasks_by_members(client, data_test):
+    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+
+    response = client.get("/api/family/tasks/", headers=headers)
+
+    assert response.status_code == 200
+
+    body_response = response.json()
+
+    assert len(body_response) == 1
+    assert body_response["data"][0][str(data_test.member.id)][0]["id"] == str(
+        data_test.task.id
+    )

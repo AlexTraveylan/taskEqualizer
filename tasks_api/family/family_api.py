@@ -54,6 +54,29 @@ def retrieve_family(request: CustomRequest):
     return response
 
 
+@router.get("/tasks/", tags=["family"])
+@login_token_required
+def get_tasks_by_members(request: CustomRequest):
+    """Get tasks by members."""
+
+    members = request.member.family.members.all()
+
+    response = JsonResponse(
+        {
+            "data": [
+                {str(member.id): [task.to_dict() for task in member.tasks.all()]}
+                for member in members
+            ]
+        },
+        status=200,
+    )
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
+
+    return response
+
+
 @router.put("/", tags=["family"])
 @login_token_required
 def update_family(request: CustomRequest, payload: FamilySchemaIn):
