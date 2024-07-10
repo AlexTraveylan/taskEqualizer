@@ -119,6 +119,5 @@ def test_get_tasks_by_members(client, data_test):
     body_response = response.json()
 
     assert len(body_response) == 1
-    assert body_response["data"][0][str(data_test.member.member_name)][0]["id"] == str(
-        data_test.task.id
-    )
+    assert body_response["data"][0]["member_name"] == data_test.member.member_name
+    assert body_response["data"][0]["tasks"][0]["id"] == str(data_test.task.id)
