@@ -15,4 +15,3 @@ setup.cfg
 
 # bdd
 db*
-migrations/
