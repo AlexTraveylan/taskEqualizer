@@ -80,6 +80,42 @@ def get_tasks_by_members(request: CustomRequest):
     return response
 
 
+@router.get("/possibles_taks_details/", tags=["family"])
+@login_token_required
+def get_possibles_tasks_details(request: CustomRequest):
+    """Get possibles tasks details."""
+
+    possible_tasks = request.member.family.possible_tasks.all()
+    members = request.member.family.members.all()
+    tasks = {member: member.tasks.all() for member in members}
+
+    data = [
+        {
+            "p_task_id": p_task.id,
+            "members": [
+                {
+                    "member_name": member.member_name,
+                    "tasks": [
+                        task.to_dict()
+                        for task in tasks[member]
+                        if task.related_possible_task == p_task
+                    ],
+                }
+                for member in members
+            ],
+        }
+        for p_task in possible_tasks
+    ]
+
+    response = JsonResponse({"data": data}, status=200)
+
+    response.set_cookie(
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+    )
+
+    return response
+
+
 @router.put("/", tags=["family"])
 @login_token_required
 def update_family(request: CustomRequest, payload: FamilySchemaIn):
