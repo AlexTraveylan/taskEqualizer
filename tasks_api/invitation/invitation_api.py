@@ -39,7 +39,7 @@ def create_invitation(request: CustomRequest):
 
     response = JsonResponse(new_invitation.to_dict(), status=201)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
     )
 
     return response

@@ -20,7 +20,7 @@ def create_task(request: CustomRequest, payload: TaskSchemaIn):
 
     response = JsonResponse(new_task.to_dict(), status=201)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
     )
 
     return response
@@ -50,7 +50,7 @@ def get_current_task(request: CustomRequest):
         response = JsonResponse(current_task.to_dict(), status=200)
 
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
     )
 
     return response
@@ -75,7 +75,7 @@ def clean_invalid_tasks(request: CustomRequest):
     )
 
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
     )
 
     return response
@@ -99,7 +99,7 @@ def update_task(request: CustomRequest, task_id: str):
 
     response = JsonResponse(task.to_dict(), status=200)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
     )
 
     return response
@@ -120,7 +120,7 @@ def delete_task(request: CustomRequest, task_id: str):
 
     response = JsonResponse({"message": "Task deleted"}, status=204)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite=None
+        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
     )
 
     return response
