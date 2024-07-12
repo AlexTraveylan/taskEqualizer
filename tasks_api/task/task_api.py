@@ -24,7 +24,6 @@ def create_task(request: CustomRequest, payload: TaskSchemaIn):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -59,7 +58,6 @@ def get_current_task(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -89,7 +87,6 @@ def clean_invalid_tasks(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -118,7 +115,6 @@ def update_task(request: CustomRequest, task_id: str):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -144,7 +140,6 @@ def delete_task(request: CustomRequest, task_id: str):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 

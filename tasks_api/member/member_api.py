@@ -40,7 +40,6 @@ def who_i_am(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -62,7 +61,6 @@ def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaI
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 

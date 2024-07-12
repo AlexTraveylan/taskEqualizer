@@ -32,7 +32,6 @@ def login(request: HttpRequest):
             token.to_jwt_token(),
             httponly=True,
             secure=True,
-            samesite="None",
             max_age=86400,
         )
         return response
@@ -76,7 +75,6 @@ def register_create_family(request: HttpRequest):
         token.to_jwt_token(),
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -140,7 +138,6 @@ def register_with_invitation(request: HttpRequest):
         token.to_jwt_token(),
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 

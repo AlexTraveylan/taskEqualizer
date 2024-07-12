@@ -26,7 +26,6 @@ def create_possible_task(request: CustomRequest, payload: PossibleTaskSchemaIn):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -58,7 +57,6 @@ def update_possible_task(
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -86,7 +84,6 @@ def delete_possible_task(request: CustomRequest, possible_task_id: str):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 

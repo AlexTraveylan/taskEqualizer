@@ -23,7 +23,6 @@ def list_members_by_family(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -44,7 +43,6 @@ def list_possibles_tasks_by_family(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -62,7 +60,6 @@ def retrieve_family(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -93,7 +90,6 @@ def get_tasks_by_members(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -134,7 +130,6 @@ def get_possibles_tasks_details(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
@@ -158,7 +153,6 @@ def update_family(request: CustomRequest, payload: FamilySchemaIn):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 

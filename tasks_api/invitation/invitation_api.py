@@ -43,7 +43,6 @@ def create_invitation(request: CustomRequest):
         request.auth_token,
         httponly=True,
         secure=True,
-        samesite="None",
         max_age=86400,
     )
 
