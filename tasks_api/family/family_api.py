@@ -19,7 +19,12 @@ def list_members_by_family(request: CustomRequest):
 
     response = JsonResponse(members_dict, safe=False, status=200)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
@@ -35,7 +40,12 @@ def list_possibles_tasks_by_family(request: CustomRequest):
 
     response = JsonResponse(possible_tasks_dict, safe=False, status=200)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
@@ -48,7 +58,12 @@ def retrieve_family(request: CustomRequest):
 
     response = JsonResponse(request.member.family.to_dict(), status=200)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
@@ -74,7 +89,12 @@ def get_tasks_by_members(request: CustomRequest):
         status=200,
     )
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
@@ -110,7 +130,12 @@ def get_possibles_tasks_details(request: CustomRequest):
     response = JsonResponse({"data": data}, status=200)
 
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
@@ -129,7 +154,12 @@ def update_family(request: CustomRequest, payload: FamilySchemaIn):
 
     response = JsonResponse({"message": "Family updated successfully."}, status=200)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response

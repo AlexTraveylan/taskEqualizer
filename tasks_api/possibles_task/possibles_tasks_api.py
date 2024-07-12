@@ -22,7 +22,12 @@ def create_possible_task(request: CustomRequest, payload: PossibleTaskSchemaIn):
 
     response = JsonResponse(new_possible_task.to_dict(), status=201)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
@@ -49,7 +54,12 @@ def update_possible_task(
 
     response = JsonResponse(possible_task.to_dict(), status=200)
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
@@ -72,7 +82,12 @@ def delete_possible_task(request: CustomRequest, possible_task_id: str):
         {"message": "Possible task deleted successfully."}, status=204
     )
     response.set_cookie(
-        "auth_token", request.auth_token, httponly=True, secure=True, samesite="None"
+        "auth_token",
+        request.auth_token,
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response

@@ -33,6 +33,7 @@ def login(request: HttpRequest):
             httponly=True,
             secure=True,
             samesite="None",
+            max_age=86400,
         )
         return response
     else:
@@ -71,7 +72,12 @@ def register_create_family(request: HttpRequest):
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse({"message": "User created"}, status=201)
     response.set_cookie(
-        "auth_token", token.to_jwt_token(), httponly=True, secure=True, samesite="None"
+        "auth_token",
+        token.to_jwt_token(),
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
@@ -130,7 +136,12 @@ def register_with_invitation(request: HttpRequest):
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse({"message": "User created"}, status=201)
     response.set_cookie(
-        "auth_token", token.to_jwt_token(), httponly=True, secure=True, samesite="None"
+        "auth_token",
+        token.to_jwt_token(),
+        httponly=True,
+        secure=True,
+        samesite="None",
+        max_age=86400,
     )
 
     return response
