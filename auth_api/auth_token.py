@@ -5,6 +5,7 @@ Module for the HeaderJwtToken class
 import datetime
 import os
 from functools import wraps
+from typing import TypedDict
 
 import jwt
 from django.http import HttpRequest, JsonResponse
@@ -18,6 +19,11 @@ load_dotenv()
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 
+class TokenContent(TypedDict):
+    user_id: str
+    expiration: float
+
+
 class HeaderJwtToken:
     """Class for the HeaderJwtToken object"""
 
@@ -27,12 +33,12 @@ class HeaderJwtToken:
             datetime.datetime.now() + datetime.timedelta(days=1)
         )
 
-    def to_dict(self):
+    def to_dict(self) -> TokenContent:
         """Convert the object to a dict"""
-        return {
-            "user_id": str(self.user_id),
-            "expiration": self.expiration.timestamp(),
-        }
+
+        return TokenContent(
+            user_id=self.user_id, expiration=self.expiration.timestamp()
+        )
 
     def __repr__(self):
         return f"HeaderJwtToken(user_id={self.user_id}, expiration={self.expiration})"
@@ -79,7 +85,6 @@ class HeaderJwtToken:
 
 
 class CustomRequest(HttpRequest):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.member: Member = None
@@ -102,7 +107,6 @@ def login_token_required(func_):
 
     @wraps(func_)
     def wrapper(*args, **kwargs):
-
         request = args[0]
 
         auth_token = request.COOKIES.get("auth_token")
