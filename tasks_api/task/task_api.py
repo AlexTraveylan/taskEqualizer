@@ -18,16 +18,7 @@ def create_task(request: CustomRequest, payload: TaskSchemaIn):
         related_possible_task_id=payload.related_possible_task_id, member=request.member
     )
 
-    response = JsonResponse(new_task.to_dict(), status=201)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse(new_task.to_dict(), status=201)
 
 
 @router.get("/", tags=["task"])
@@ -42,26 +33,15 @@ def get_current_task(request: CustomRequest):
     )
 
     if current_task is None:
-        response = JsonResponse({"message": "No task found"}, status=404)
+        return JsonResponse({"message": "No task found"}, status=404)
 
-    elif current_task.is_invalid():
-        response = JsonResponse({"message": "Task is invalid"}, status=400)
+    if current_task.is_invalid():
+        return JsonResponse({"message": "Task is invalid"}, status=400)
 
-    elif current_task.is_not_current():
-        response = JsonResponse({"message": "Task is not current"}, status=400)
+    if current_task.is_not_current():
+        return JsonResponse({"message": "Task is not current"}, status=400)
 
-    else:
-        response = JsonResponse(current_task.to_dict(), status=200)
-
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse(current_task.to_dict(), status=200)
 
 
 @router.delete("/clean", tags=["task"])
@@ -78,19 +58,9 @@ def clean_invalid_tasks(request: CustomRequest):
     for task in tasks_to_delete:
         task.delete()
 
-    response = JsonResponse(
+    return JsonResponse(
         {"message": f"{len(tasks_to_delete)} tasks cleaned"}, status=204
     )
-
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
 
 
 @router.put("/{task_id}", tags=["task"])
@@ -109,16 +79,7 @@ def update_task(request: CustomRequest, task_id: str):
     task.duration_in_seconds = task.duration(task.ended_at)
     task.save()
 
-    response = JsonResponse(task.to_dict(), status=200)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse(task.to_dict(), status=200)
 
 
 @router.delete("/{task_id}", tags=["task"])
@@ -134,13 +95,4 @@ def delete_task(request: CustomRequest, task_id: str):
 
     task.delete()
 
-    response = JsonResponse({"message": "Task deleted"}, status=204)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse({"message": "Task deleted"}, status=204)

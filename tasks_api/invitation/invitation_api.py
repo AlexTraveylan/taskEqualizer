@@ -37,13 +37,4 @@ def create_invitation(request: CustomRequest):
         code=new_code, family=request.member.family, expired_at=expire_date_one_week
     )
 
-    response = JsonResponse(new_invitation.to_dict(), status=201)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse(new_invitation.to_dict(), status=201)

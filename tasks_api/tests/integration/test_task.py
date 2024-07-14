@@ -1,4 +1,5 @@
 import json
+import time
 from uuid import UUID
 
 import pytest
@@ -42,6 +43,7 @@ def test_retrieve_task(client, data_test):
     headers = {
         "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
     }
+    time.sleep(0.1)
     response = client.get(
         "/api/task/",
         content_type="application/json",
@@ -67,6 +69,8 @@ def test_update_task(client, data_test):
     headers = {
         "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
     }
+    time.sleep(0.1)
+
     response = client.put(
         f"/api/task/{data_test.task.id}",
         data=json.dumps(payload),
@@ -113,6 +117,7 @@ def test_clean_tasks(client, data_test):
     headers = {
         "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
     }
+    time.sleep(0.1)
 
     # data_test.task should not be deleted
 

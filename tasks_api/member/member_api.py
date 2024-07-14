@@ -34,16 +34,7 @@ def retrieve_member(request: HttpRequest, member_id: str):
 def who_i_am(request: CustomRequest):
     """Display actual member"""
 
-    response = JsonResponse({"name": request.member.member_name}, status=200)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse({"name": request.member.member_name}, status=200)
 
 
 @router.put("/{member_id}", tags=["member"])
@@ -55,16 +46,7 @@ def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaI
         setattr(request.member, key, value)
 
     request.member.save()
-    response = JsonResponse({"message": "Member updated successfully."}, status=200)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse({"message": "Member updated successfully."}, status=200)
 
 
 @router.delete("/{member_id}", tags=["member"])

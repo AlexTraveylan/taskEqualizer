@@ -20,16 +20,7 @@ def create_possible_task(request: CustomRequest, payload: PossibleTaskSchemaIn):
         **payload.dict(), family_id=family_id
     )
 
-    response = JsonResponse(new_possible_task.to_dict(), status=201)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse(new_possible_task.to_dict(), status=201)
 
 
 @router.put("/{possible_task_id}", tags=["possible_task"])
@@ -51,16 +42,7 @@ def update_possible_task(
 
     possible_task.save()
 
-    response = JsonResponse(possible_task.to_dict(), status=200)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse(possible_task.to_dict(), status=200)
 
 
 @router.delete("/{possible_task_id}", tags=["possible_task"])
@@ -76,15 +58,4 @@ def delete_possible_task(request: CustomRequest, possible_task_id: str):
 
     possible_task.delete()
 
-    response = JsonResponse(
-        {"message": "Possible task deleted successfully."}, status=204
-    )
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse({"message": "Possible task deleted successfully."}, status=204)

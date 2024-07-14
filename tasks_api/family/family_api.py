@@ -18,13 +18,6 @@ def list_members_by_family(request: CustomRequest):
     members_dict = list(members.values())
 
     response = JsonResponse(members_dict, safe=False, status=200)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
 
     return response
 
@@ -37,16 +30,7 @@ def list_possibles_tasks_by_family(request: CustomRequest):
     possible_tasks = request.member.family.possible_tasks.all()
     possible_tasks_dict = list(possible_tasks.values())
 
-    response = JsonResponse(possible_tasks_dict, safe=False, status=200)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse(possible_tasks_dict, safe=False, status=200)
 
 
 @router.get("/", tags=["family"])
@@ -54,16 +38,7 @@ def list_possibles_tasks_by_family(request: CustomRequest):
 def retrieve_family(request: CustomRequest):
     """Retrieve a family."""
 
-    response = JsonResponse(request.member.family.to_dict(), status=200)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse(request.member.family.to_dict(), status=200)
 
 
 @router.get("/tasks/", tags=["family"])
@@ -73,7 +48,7 @@ def get_tasks_by_members(request: CustomRequest):
 
     members = request.member.family.members.all()
 
-    response = JsonResponse(
+    return JsonResponse(
         {
             "data": [
                 {
@@ -85,15 +60,6 @@ def get_tasks_by_members(request: CustomRequest):
         },
         status=200,
     )
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
 
 
 @router.get("/possibles_taks_details/", tags=["family"])
@@ -123,17 +89,7 @@ def get_possibles_tasks_details(request: CustomRequest):
         for p_task in possible_tasks
     ]
 
-    response = JsonResponse({"data": data}, status=200)
-
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse({"data": data}, status=200)
 
 
 @router.put("/", tags=["family"])
@@ -147,16 +103,7 @@ def update_family(request: CustomRequest, payload: FamilySchemaIn):
 
     family.save()
 
-    response = JsonResponse({"message": "Family updated successfully."}, status=200)
-    response.set_cookie(
-        "auth_token",
-        request.auth_token,
-        httponly=True,
-        secure=True,
-        max_age=86400,
-    )
-
-    return response
+    return JsonResponse({"message": "Family updated successfully."}, status=200)
 
 
 @router.delete("/", tags=["family"])
