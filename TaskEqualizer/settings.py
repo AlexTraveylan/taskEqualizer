@@ -10,7 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
+
+PRODUCTION = os.getenv("PRODUCTION")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,9 +31,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-#h0$$kor(d5pxxm1o3sa=0s-ywcfk8dt1xunlkb=sz7#60*9kq"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False if PRODUCTION else True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["alextraveylan.pythonanywhere.com"] if PRODUCTION else []
 
 
 # Application definition
@@ -130,8 +138,16 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default field to exclude from the schemas
 STANDARD_EXCLUDE = ["id", "created_at", "updated_at"]
 
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_ALLOWED_ORIGINS = (
+    ["https://taskequalizer.vercel.app"] if PRODUCTION else ["http://localhost:3000"]
+)
 CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    ["https://taskequalizer.vercel.app"] if PRODUCTION else ["http://localhost:3000"]
+)
+CSRF_TRUSTED_ORIGINS = (
+    ["https://taskequalizer.vercel.app"] if PRODUCTION else ["http://localhost:3000"]
+)
 
 
 MAX_SECOND_FOR_TASK = 60 * 60 * 2
