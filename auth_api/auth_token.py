@@ -81,8 +81,7 @@ class HeaderJwtToken:
     def add_token_to_response(self, response: JsonResponse) -> None:
         """Add the token to a JsonResponse object"""
         response.set_cookie(
-            TOKEN_NAME,
-            self.to_jwt_token(),
+            TOKEN_NAME, self.to_jwt_token(), samesite="None", secure=True, httponly=True
         )
 
 

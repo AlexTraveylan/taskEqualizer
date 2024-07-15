@@ -27,13 +27,7 @@ def login(request: HttpRequest):
         member = Member.objects.filter(member_name=user.username).first()
         response = JsonResponse({"message": "Login successful"}, status=200)
         token = HeaderJwtToken(user_id=member.id)
-        response.set_cookie(
-            "auth_token",
-            token.to_jwt_token(),
-            httponly=True,
-            secure=True,
-            max_age=86400,
-        )
+        token.add_token_to_response(response)
         return response
     else:
         return JsonResponse({"message": "Invalid credentials"}, status=401)
