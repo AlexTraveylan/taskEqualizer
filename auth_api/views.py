@@ -9,6 +9,7 @@ from pydantic import ValidationError
 
 from auth_api.auth_token import HeaderJwtToken
 from auth_api.schemas import RegisterCreateSchema, RegisterInviteSchema
+from TaskEqualizer.settings import TOKEN_NAME
 from tasks_api.family.models import Family
 from tasks_api.invitation.models import Invitation
 from tasks_api.member.models import Member
@@ -25,9 +26,11 @@ def login(request: HttpRequest):
     user = authenticate(username=username, password=password)
     if user is not None:
         member = Member.objects.filter(member_name=user.username).first()
-        response = JsonResponse({"message": "Login successful"}, status=200)
         token = HeaderJwtToken(user_id=member.id)
-        token.add_token_to_response(response)
+        response = JsonResponse(
+            {"message": "Login successful", TOKEN_NAME: token.to_jwt_token()},
+            status=200,
+        )
         return response
     else:
         return JsonResponse({"message": "Invalid credentials"}, status=401)
@@ -63,8 +66,9 @@ def register_create_family(request: HttpRequest):
     )
     member = Member.objects.create(member_name=user.username, family=family)
     token = HeaderJwtToken(user_id=member.id)
-    response = JsonResponse({"message": "User created"}, status=201)
-    token.add_token_to_response(response)
+    response = JsonResponse(
+        {"message": "User created", TOKEN_NAME: token.to_jwt_token()}, status=201
+    )
 
     return response
 
@@ -120,13 +124,8 @@ def register_with_invitation(request: HttpRequest):
 
     # Create the token
     token = HeaderJwtToken(user_id=member.id)
-    response = JsonResponse({"message": "User created"}, status=201)
-    token.add_token_to_response(response)
+    response = JsonResponse(
+        {"message": "User created", TOKEN_NAME: token.to_jwt_token()}, status=201
+    )
 
-    return response
-
-
-def logout(request: HttpRequest):
-    response = JsonResponse({"message": "Logout successful"}, status=200)
-    response.delete_cookie("auth_token")
     return response

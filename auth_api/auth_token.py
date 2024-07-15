@@ -11,7 +11,7 @@ from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
 
-from TaskEqualizer.settings import SECRET_KEY, TOKEN_NAME
+from TaskEqualizer.settings import SECRET_KEY
 from tasks_api.member.models import Member
 
 load_dotenv()
@@ -78,12 +78,6 @@ class HeaderJwtToken:
         """Check if the token is expired"""
         return datetime.datetime.now() > self.expiration
 
-    def add_token_to_response(self, response: JsonResponse) -> None:
-        """Add the token to a JsonResponse object"""
-        response.set_cookie(
-            TOKEN_NAME, self.to_jwt_token(), samesite="None", secure=True, httponly=True
-        )
-
 
 # decorateur for endpoint that require a token
 
@@ -113,11 +107,14 @@ def login_token_required(func_):
     def wrapper(*args, **kwargs):
         request = args[0]
 
-        auth_token = request.COOKIES.get("auth_token")
+        auth_token = request.headers.get("Authorization")
 
         # check if the token is present
         if not auth_token:
             return JsonResponse({"message": "Unauthorized"}, status=401)
+
+        # Extract the token from the header
+        auth_token = auth_token.split(" ")[1]
 
         # decode the token
         decoded_token = HeaderJwtToken.from_jwt_token(auth_token)
