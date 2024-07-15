@@ -17,7 +17,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PRODUCTION = os.getenv("PRODUCTION")
+PRODUCTION = True if os.getenv("PRODUCTION") == "True" else False
+CLIENT_HOST = os.getenv("CLIENT_HOST")
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -138,16 +139,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Default field to exclude from the schemas
 STANDARD_EXCLUDE = ["id", "created_at", "updated_at"]
 
-CORS_ALLOWED_ORIGINS = (
-    ["https://taskequalizer.vercel.app"] if PRODUCTION else ["http://localhost:3000"]
-)
+CORS_ALLOWED_ORIGINS = [CLIENT_HOST]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = (
-    ["https://taskequalizer.vercel.app"] if PRODUCTION else ["http://localhost:3000"]
-)
-CSRF_TRUSTED_ORIGINS = (
-    ["https://taskequalizer.vercel.app"] if PRODUCTION else ["http://localhost:3000"]
-)
+CORS_ORIGIN_WHITELIST = [CLIENT_HOST]
+CSRF_TRUSTED_ORIGINS = [CLIENT_HOST]
 
 
 MAX_SECOND_FOR_TASK = 60 * 60 * 2

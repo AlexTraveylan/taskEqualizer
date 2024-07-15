@@ -76,6 +76,7 @@ def register_create_family(request: HttpRequest):
         httponly=True,
         secure=True,
         max_age=86400,
+        samesite="Strict",
     )
 
     return response
@@ -139,6 +140,7 @@ def register_with_invitation(request: HttpRequest):
         httponly=True,
         secure=True,
         max_age=86400,
+        samesite="Strict",
     )
 
     return response
