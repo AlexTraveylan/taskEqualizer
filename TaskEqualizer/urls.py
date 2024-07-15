@@ -20,7 +20,6 @@ from django.urls import path
 
 from auth_api.views import (
     login,
-    logout,
     register_create_family,
     register_with_invitation,
 )
@@ -32,5 +31,4 @@ urlpatterns = [
     path("login", login, name="login"),
     path("register_create", register_create_family, name="register_create"),
     path("register_invite", register_with_invitation, name="register_invite"),
-    path("logout", logout, name="logout"),
 ]
