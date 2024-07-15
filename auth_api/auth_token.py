@@ -3,7 +3,6 @@ Module for the HeaderJwtToken class
 """
 
 import datetime
-import os
 from functools import wraps
 from typing import TypedDict
 
@@ -12,11 +11,10 @@ from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
 
+from TaskEqualizer.settings import SECRET_KEY, TOKEN_NAME
 from tasks_api.member.models import Member
 
 load_dotenv()
-
-SECRET_KEY = str(os.getenv("SECRET_KEY"))
 
 
 class TokenContent(TypedDict):
@@ -79,6 +77,16 @@ class HeaderJwtToken:
     def is_expired(self):
         """Check if the token is expired"""
         return datetime.datetime.now() > self.expiration
+
+    def add_token_to_response(self, response: JsonResponse) -> None:
+        """Add the token to a JsonResponse object"""
+        response.set_cookie(
+            TOKEN_NAME,
+            self.to_jwt_token(),
+            httponly=False,
+            secure=False,
+            samesite="Strict",
+        )
 
 
 # decorateur for endpoint that require a token

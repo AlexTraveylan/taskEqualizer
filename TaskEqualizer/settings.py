@@ -136,8 +136,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Default field to exclude from the schemas
-STANDARD_EXCLUDE = ["id", "created_at", "updated_at"]
 
 CORS_ALLOWED_ORIGINS = [CLIENT_HOST]
 CORS_ALLOW_CREDENTIALS = True
@@ -145,5 +143,13 @@ CORS_ORIGIN_WHITELIST = [CLIENT_HOST]
 CSRF_TRUSTED_ORIGINS = [CLIENT_HOST]
 
 
+# Default field to exclude from the schemas
+STANDARD_EXCLUDE = ["id", "created_at", "updated_at"]
+
+# Maximum and minimum time for a task
 MAX_SECOND_FOR_TASK = 60 * 60 * 2
 MIN_SECOND_FOR_TASK = 60 * 1
+
+# Token settings
+SECRET_KEY = str(os.getenv("SECRET_KEY"))
+TOKEN_NAME = "auth_token"

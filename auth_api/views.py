@@ -70,14 +70,7 @@ def register_create_family(request: HttpRequest):
     member = Member.objects.create(member_name=user.username, family=family)
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse({"message": "User created"}, status=201)
-    response.set_cookie(
-        "auth_token",
-        token.to_jwt_token(),
-        httponly=True,
-        secure=True,
-        max_age=86400,
-        samesite="Strict",
-    )
+    token.add_token_to_response(response)
 
     return response
 
@@ -134,14 +127,7 @@ def register_with_invitation(request: HttpRequest):
     # Create the token
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse({"message": "User created"}, status=201)
-    response.set_cookie(
-        "auth_token",
-        token.to_jwt_token(),
-        httponly=True,
-        secure=True,
-        max_age=86400,
-        samesite="Strict",
-    )
+    token.add_token_to_response(response)
 
     return response
 
