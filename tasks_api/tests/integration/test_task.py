@@ -15,9 +15,7 @@ def test_create_task(client, data_test):
     payload = {"related_possible_task_id": str(data_test.possible_task.id)}
 
     # We need to send the auth_token in the headers
-    headers = {
-        "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
-    }
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
     response = client.post(
         "/api/task/",
         data=json.dumps(payload),
@@ -40,9 +38,7 @@ def test_retrieve_task(client, data_test):
     """Test the retrieval of a task."""
 
     # We need to send the auth_token in the headers
-    headers = {
-        "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
-    }
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
     time.sleep(0.1)
     response = client.get(
         "/api/task/",
@@ -66,9 +62,7 @@ def test_update_task(client, data_test):
     payload = {"ended_at": "2021-01-01T00:00:00Z"}
 
     # We need to send the auth_token in the headers
-    headers = {
-        "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
-    }
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
     time.sleep(0.1)
 
     response = client.put(
@@ -92,9 +86,7 @@ def test_delete_task(client, data_test):
     """Test the deletion of a task."""
 
     # We need to send the auth_token in the headers
-    headers = {
-        "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
-    }
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
     response = client.delete(
         f"/api/task/{data_test.task.id}",
         headers=headers,
@@ -114,9 +106,7 @@ def test_clean_tasks(client, data_test):
     """Test the cleaning of tasks."""
 
     # We need to send the auth_token in the headers
-    headers = {
-        "Cookie": f"auth_token={data_test.token.to_jwt_token()}",
-    }
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
     time.sleep(0.1)
 
     # data_test.task should not be deleted

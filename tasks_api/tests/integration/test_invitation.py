@@ -10,7 +10,7 @@ def test_create_invitation(client, data_test):
     """Test the creation of an invitation code."""
 
     # We need to send the auth_token in the headers
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
     response = client.get("/api/invitation/", headers=headers)
 
     assert response.status_code == 201

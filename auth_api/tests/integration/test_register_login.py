@@ -3,12 +3,12 @@ from datetime import datetime, timedelta
 
 import pytest
 
+from TaskEqualizer.settings import TOKEN_NAME
 from tasks_api.models import Family, Invitation
 
 
 @pytest.mark.django_db
 def test_integr_register_create_family(client):
-
     body = {
         "family_name": "Test Family",
         "username": "test_user",
@@ -20,12 +20,11 @@ def test_integr_register_create_family(client):
     )
 
     assert response.status_code == 201
-    assert response.cookies["auth_token"] is not None
+    assert response.json()[TOKEN_NAME] is not None
 
 
 @pytest.mark.django_db
 def test_integr_login(client):
-
     register_body = {
         "family_name": "Test Family",
         "username": "test_user",
@@ -47,7 +46,7 @@ def test_integr_login(client):
     )
 
     assert response_login.status_code == 200
-    assert response_login.cookies["auth_token"] is not None
+    assert response_login.json()[TOKEN_NAME] is not None
 
 
 @pytest.mark.django_db
@@ -74,7 +73,7 @@ def test_integr_register_with_invitation(client):
 
     # Check if the user is created and logged in
     assert response.status_code == 201
-    assert response.cookies["auth_token"] is not None
+    assert response.json()[TOKEN_NAME] is not None
 
     # Check if the user is in the family
     member = family.members.first()

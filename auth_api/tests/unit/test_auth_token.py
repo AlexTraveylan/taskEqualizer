@@ -69,7 +69,7 @@ def test_login_token_required_with_valid_token(custom_request):
     valid_token = HeaderJwtToken(user_id)
     family = Family.objects.create(family_name="test")
     Member.objects.create(id=user_id, member_name="test", family=family)
-    custom_request.COOKIES = {"auth_token": valid_token.to_jwt_token()}
+    custom_request.META["HTTP_AUTHORIZATION"] = f"Bearer {valid_token.to_jwt_token()}"
 
     @login_token_required
     def dummy_view(request):
@@ -105,7 +105,7 @@ def test_login_token_required_with_missing_token(custom_request):
 def test_login_token_required_with_expired_token(custom_request):
     expired_token = HeaderJwtToken("test")
     expired_token.expiration = datetime.now() - timedelta(hours=1)
-    custom_request.COOKIES = {"auth_token": expired_token.to_jwt_token()}
+    custom_request.META["HTTP_AUTHORIZATION"] = f"Bearer {expired_token.to_jwt_token()}"
 
     @login_token_required
     def dummy_view(request):
@@ -124,7 +124,7 @@ def test_login_token_required_with_expired_token(custom_request):
 def test_login_token_required_with_invalid_user(custom_request):
     user_id = uuid.uuid4()
     invalid_token = HeaderJwtToken(user_id)
-    custom_request.COOKIES = {"auth_token": invalid_token.to_jwt_token()}
+    custom_request.META["HTTP_AUTHORIZATION"] = f"Bearer {invalid_token.to_jwt_token()}"
 
     @login_token_required
     def dummy_view(request):

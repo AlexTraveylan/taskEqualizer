@@ -5,6 +5,7 @@ import pytest
 from django.contrib.auth.models import User
 
 from auth_api.views import login, logout, register_create_family
+from TaskEqualizer.settings import TOKEN_NAME
 from tasks_api.family.models import Family
 from tasks_api.member.models import Member
 
@@ -31,7 +32,7 @@ def test_login_success(mock_authenticate, setup_login_test):
     response = login(request)
 
     assert response.status_code == 200
-    assert "auth_token" in response.cookies
+    assert TOKEN_NAME in response.cookies
 
     content_str = response.content.decode("utf-8")
     json_data = json.loads(content_str)
@@ -75,7 +76,7 @@ def test_register_succes():
     response = register_create_family(request)
 
     assert response.status_code == 201
-    assert "auth_token" in response.cookies
+    assert TOKEN_NAME in response.cookies
 
     content_str = response.content.decode("utf-8")
     json_data = json.loads(content_str)
@@ -131,12 +132,12 @@ def test_register_fail_user_already_exist():
 @pytest.mark.django_db
 def test_logout():
     request = MagicMock()
-    request.COOKIES = {"auth_token": "test_token"}
+    request.COOKIES = {TOKEN_NAME: "test_token"}
 
     response = logout(request)
 
     assert response.status_code == 200
-    assert response.cookies["auth_token"].value == ""
+    assert response.cookies[TOKEN_NAME].value == ""
 
     json_data = json.loads(response.content.decode("utf-8"))
     assert json_data["message"] == "Logout successful"

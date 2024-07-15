@@ -57,6 +57,6 @@ def delete_member(request: CustomRequest, member_id: str):
     request.member.delete()
 
     response = JsonResponse({"message": "Member deleted successfully."}, status=200)
-    response.delete_cookie("auth_token")
+    response.delete_cookie(TOKEN_NAME)
 
     return response

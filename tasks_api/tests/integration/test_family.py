@@ -7,7 +7,7 @@ from tasks_api.models import Family, Member, PossibleTask, Task
 
 @pytest.mark.django_db
 def test_list_members_by_family(client, data_test):
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     response = client.get("/api/family/members/", headers=headers)
 
@@ -25,7 +25,7 @@ def test_list_members_by_family_with_two_members(client, data_test):
         member_name="Test Member 2", family=data_test.family
     )
 
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     response = client.get("/api/family/members/", headers=headers)
 
@@ -40,7 +40,7 @@ def test_list_members_by_family_with_two_members(client, data_test):
 
 @pytest.mark.django_db
 def test_list_possibles_tasks_by_family(client, data_test):
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     response = client.get("/api/family/possible_tasks/", headers=headers)
 
@@ -60,7 +60,7 @@ def test_list_possibles_tasks_by_family_with_two_possible_tasks(client, data_tes
         family=data_test.family,
     )
 
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     response = client.get("/api/family/possible_tasks/", headers=headers)
 
@@ -75,7 +75,7 @@ def test_list_possibles_tasks_by_family_with_two_possible_tasks(client, data_tes
 
 @pytest.mark.django_db
 def test_update_family(client, data_test):
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     payload = {"family_name": "New Family Name"}
 
@@ -90,7 +90,7 @@ def test_update_family(client, data_test):
 
 @pytest.mark.django_db
 def test_delete_family(client, data_test):
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     response = client.delete("/api/family/", headers=headers)
 
@@ -110,7 +110,7 @@ def test_delete_family(client, data_test):
 
 @pytest.mark.django_db
 def test_get_tasks_by_members(client, data_test):
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     response = client.get("/api/family/tasks/", headers=headers)
 
@@ -125,7 +125,7 @@ def test_get_tasks_by_members(client, data_test):
 
 @pytest.mark.django_db
 def test_get_possibles_tasks_details(client, data_test):
-    headers = {"Cookie": f"auth_token={data_test.token.to_jwt_token()}"}
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     response = client.get("/api/family/possibles_taks_details/", headers=headers)
 

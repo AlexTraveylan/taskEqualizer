@@ -11,7 +11,7 @@ from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from dotenv import load_dotenv
 
-from TaskEqualizer.settings import SECRET_KEY
+from TaskEqualizer.settings import SECRET_KEY, TOKEN_NAME
 from tasks_api.member.models import Member
 
 load_dotenv()
@@ -122,7 +122,7 @@ def login_token_required(func_):
         # check if the token is expired
         if decoded_token.is_expired():
             response = JsonResponse({"message": "Unauthorized"}, status=401)
-            response.delete_cookie("auth_token")
+            response.delete_cookie(TOKEN_NAME)
 
             return response
 
