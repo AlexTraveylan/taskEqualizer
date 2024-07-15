@@ -83,9 +83,6 @@ class HeaderJwtToken:
         response.set_cookie(
             TOKEN_NAME,
             self.to_jwt_token(),
-            httponly=False,
-            secure=False,
-            samesite="Strict",
         )
 
 
