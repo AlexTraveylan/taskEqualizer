@@ -35,7 +35,7 @@ def test_update_possible_task(client, data_test):
     """Test the update of a possible task."""
 
     payload = {
-        "possible_task_name": "Test Task modified",
+        "possible_task_name": "Modified",
         "description": "Task modified.",
     }
 
@@ -51,10 +51,8 @@ def test_update_possible_task(client, data_test):
     assert response.status_code == 200
 
     # Check if the task has been updated
-    possible_task = PossibleTask.objects.filter(
-        possible_task_name="Test Task modified"
-    ).first()
-    assert possible_task.possible_task_name == "Test Task modified"
+    possible_task = PossibleTask.objects.filter(possible_task_name="Modified").first()
+    assert possible_task.possible_task_name == "Modified"
 
 
 @pytest.mark.django_db
