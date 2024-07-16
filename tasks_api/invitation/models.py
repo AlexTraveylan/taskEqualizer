@@ -7,7 +7,7 @@ class Invitation(models.Model):
     """Model for the invitation table."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    code = models.CharField(max_length=100)
+    code = models.CharField(max_length=8)
     is_used = models.BooleanField(default=False)
     family = models.ForeignKey(
         "Family", on_delete=models.CASCADE, related_name="invitations"
