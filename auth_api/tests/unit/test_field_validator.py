@@ -1,6 +1,7 @@
 import pytest
 
 from auth_api.schemas import validate_family_name, validate_password, validate_username
+from auth_api.validators import validate_invitation_code
 
 
 @pytest.mark.parametrize(
@@ -73,3 +74,21 @@ def test_validate_family_name_with_valid_family_name(valid_family_name):
 def test_validate_family_name_with_invalid_family_name(invalid_family_name):
     with pytest.raises(ValueError):
         validate_family_name(invalid_family_name)
+
+
+@pytest.mark.parametrize("valid_invitation_code", ["VALIDCOD", "12345678", "A1B2C3D4"])
+def test_validate_invitation_code_with_valid_invitation_code(valid_invitation_code):
+    assert validate_invitation_code(valid_invitation_code) == valid_invitation_code
+
+
+@pytest.mark.parametrize(
+    "invalid_invitation_code",
+    [
+        "abcdefgh",
+        "A1B2C3D",
+        "A1B2C3D4E",
+    ],
+)
+def test_validate_invitation_code_with_invalid_invitation_code(invalid_invitation_code):
+    with pytest.raises(ValueError):
+        validate_invitation_code(invalid_invitation_code)
