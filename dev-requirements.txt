@@ -1,0 +1,4 @@
+pytest
+pytest-django
+factory_boy
+-r requirements.txt
