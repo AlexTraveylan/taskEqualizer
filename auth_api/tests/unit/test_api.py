@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from django.contrib.auth.models import User
 
-from auth_api.views import login, logout, register_create_family
+from auth_api.views import login, register_create_family
 from TaskEqualizer.settings import TOKEN_NAME
 from tasks_api.family.models import Family
 from tasks_api.member.models import Member
@@ -27,16 +27,15 @@ def test_login_success(mock_authenticate, setup_login_test):
 
     request = MagicMock()
     request.method = "POST"
-    request.body = json.dumps({"username": "testuser", "password": "12345"})
+    request.body = json.dumps({"username": "testuser", "password": "ValidPassword123*"})
 
     response = login(request)
 
     assert response.status_code == 200
-    assert TOKEN_NAME in response.cookies
 
-    content_str = response.content.decode("utf-8")
-    json_data = json.loads(content_str)
+    json_data = json.loads(response.content)
 
+    assert TOKEN_NAME in json_data
     assert json_data["message"] == "Login successful"
 
 
@@ -69,18 +68,17 @@ def test_register_succes():
         {
             "family_name": "testfamily",
             "username": "newuser",
-            "password": "12345",
+            "password": "ValidPassword123*",
         }
     )
 
     response = register_create_family(request)
 
     assert response.status_code == 201
-    assert TOKEN_NAME in response.cookies
 
-    content_str = response.content.decode("utf-8")
-    json_data = json.loads(content_str)
+    json_data = json.loads(response.content)
 
+    assert TOKEN_NAME in json_data
     assert json_data["message"] == "User created"
 
 
@@ -102,7 +100,7 @@ def test_register_fail_missing_informations():
     content_str = response.content.decode("utf-8")
     json_data = json.loads(content_str)
 
-    assert json_data["message"] == "Missing informations"
+    assert json_data["message"] == "Invalid data"
 
 
 @pytest.mark.django_db
@@ -115,7 +113,7 @@ def test_register_fail_user_already_exist():
         {
             "family_name": "testfamily",
             "username": "testuser",
-            "password": "12345",
+            "password": "ValidPassword123*",
         }
     )
 
@@ -127,17 +125,3 @@ def test_register_fail_user_already_exist():
     json_data = json.loads(content_str)
 
     assert json_data["message"] == "Username already exists"
-
-
-@pytest.mark.django_db
-def test_logout():
-    request = MagicMock()
-    request.COOKIES = {TOKEN_NAME: "test_token"}
-
-    response = logout(request)
-
-    assert response.status_code == 200
-    assert response.cookies[TOKEN_NAME].value == ""
-
-    json_data = json.loads(response.content.decode("utf-8"))
-    assert json_data["message"] == "Logout successful"

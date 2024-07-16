@@ -54,7 +54,7 @@ def register_create_family(request: HttpRequest):
     try:
         parsed_data = RegisterCreateSchema(**data_used)
     except ValidationError:
-        return JsonResponse({"message": "Missing informations"}, status=400)
+        return JsonResponse({"message": "Invalid data"}, status=400)
 
     user = User.objects.filter(username=parsed_data.username).first()
     if user:

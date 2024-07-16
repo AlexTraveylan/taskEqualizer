@@ -12,7 +12,7 @@ def test_integr_register_create_family(client):
     body = {
         "family_name": "Test Family",
         "username": "test_user",
-        "password": "test_password",
+        "password": "ValidPassword123*",
     }
 
     response = client.post(
@@ -28,7 +28,7 @@ def test_integr_login(client):
     register_body = {
         "family_name": "Test Family",
         "username": "test_user",
-        "password": "test_password",
+        "password": "ValidPassword123*",
     }
 
     response_register = client.post(
@@ -39,7 +39,7 @@ def test_integr_login(client):
 
     assert response_register.status_code == 201
 
-    login_body = {"username": "test_user", "password": "test_password"}
+    login_body = {"username": "test_user", "password": "ValidPassword123*"}
 
     response_login = client.post(
         "/login", data=json.dumps(login_body), content_type="application/json"
@@ -64,7 +64,7 @@ def test_integr_register_with_invitation(client):
     # Register a user with the invitation
     payload = {
         "username": "test_user",
-        "password": "test_password",
+        "password": "ValidPassword123*",
         "invitation_code": "TESTCODE",
     }
     response = client.post(
