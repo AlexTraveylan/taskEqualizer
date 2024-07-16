@@ -2,12 +2,14 @@ import uuid
 
 from django.db import models
 
+from TaskEqualizer.settings import MAX_LENGTH_USERNAME
+
 
 class Member(models.Model):
     """Model for the member table."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    member_name = models.CharField(max_length=100)
+    member_name = models.CharField(max_length=MAX_LENGTH_USERNAME)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     family = models.ForeignKey(
