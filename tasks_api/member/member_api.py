@@ -1,32 +1,10 @@
-from django.http import HttpRequest, JsonResponse
-from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
-from tasks_api.member.models import Member
-from tasks_api.member.schemas import MemberSchemaIn, MemberSchemaOut
-from tasks_api.task.schemas import TaskSchemaOut
+from tasks_api.member.schemas import MemberSchemaIn
 
 router = Router()
-
-
-@router.get("/tasks/{member_id}", response=list[TaskSchemaOut], tags=["member"])
-def list_member_tasks(request: HttpRequest, member_id: str):
-    """List all tasks for a member."""
-    member = get_object_or_404(Member, id=member_id)
-
-    tasks = member.tasks.all()
-
-    return tasks
-
-
-@router.get("/{member_id}", response=MemberSchemaOut, tags=["member"])
-def retrieve_member(request: HttpRequest, member_id: str):
-    """Retrieve a member."""
-
-    member = get_object_or_404(Member, id=member_id)
-
-    return member
 
 
 @router.get("/", tags=["member"])
@@ -34,18 +12,17 @@ def retrieve_member(request: HttpRequest, member_id: str):
 def who_i_am(request: CustomRequest):
     """Display actual member"""
 
-    return JsonResponse({"name": request.member.member_name}, status=200)
+    return JsonResponse({"member_id": str(request.member.id)}, status=200)
 
 
-@router.put("/{member_id}", tags=["member"])
+@router.put("/", tags=["member"])
 @login_token_required
-def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaIn):
+def update_member(request: CustomRequest, payload: MemberSchemaIn):
     """Update a member."""
 
-    for key, value in payload.dict().items():
-        setattr(request.member, key, value)
-
+    request.member.member_name = payload.member_name
     request.member.save()
+
     return JsonResponse({"message": "Member updated successfully."}, status=200)
 
 
@@ -54,9 +31,13 @@ def update_member(request: CustomRequest, member_id: str, payload: MemberSchemaI
 def delete_member(request: CustomRequest, member_id: str):
     """Delete a member."""
 
-    request.member.delete()
+    members_in_family = request.member.family.members.all()
 
+    if member_id not in [str(member.id) for member in members_in_family]:
+        return JsonResponse({"message": "Member not found."}, status=404)
+
+    member = members_in_family.get(id=member_id)
+    member.delete()
     response = JsonResponse({"message": "Member deleted successfully."}, status=200)
-    response.delete_cookie(TOKEN_NAME)
 
     return response
