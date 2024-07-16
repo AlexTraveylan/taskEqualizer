@@ -1,6 +1,7 @@
 import re
 
 from TaskEqualizer.settings import (
+    INVITATION_CODE_SIZE,
     MAX_LENGTH_FAMILY_NAME,
     MAX_LENGTH_USERNAME,
     MIN_LENGTH_FAMILY_NAME,
@@ -44,5 +45,21 @@ def validate_password(value: str) -> str:
 
     if not re.search(r"\d", value):
         raise ValueError("Password must contain at least one digit")
+
+    return value
+
+
+def validate_invitation_code(value: str) -> str:
+    value = value.strip()
+
+    if len(value) != INVITATION_CODE_SIZE:
+        raise ValueError(
+            f"Invitation code must be {INVITATION_CODE_SIZE} characters long"
+        )
+
+    if not re.match("^[A-Z0-9]*$", value):
+        raise ValueError(
+            "Invitation code must contain only uppercase letters and digits"
+        )
 
     return value

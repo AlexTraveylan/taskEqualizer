@@ -2,10 +2,10 @@ from pydantic import BaseModel, field_validator
 
 from auth_api.validators import (
     validate_family_name,
+    validate_invitation_code,
     validate_password,
     validate_username,
 )
-from TaskEqualizer.settings import INVITATION_CODE_SIZE
 
 
 class RegisterCreateSchema(BaseModel):
@@ -41,9 +41,4 @@ class RegisterInviteSchema(BaseModel):
 
     @field_validator("invitation_code")
     def invitation_code_length(cls, value: str) -> str:
-        if len(value) != INVITATION_CODE_SIZE:
-            raise ValueError(
-                f"Invitation code must be {INVITATION_CODE_SIZE} characters long"
-            )
-
-        return value.strip()
+        return validate_invitation_code(value)
