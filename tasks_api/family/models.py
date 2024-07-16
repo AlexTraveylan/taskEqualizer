@@ -2,12 +2,14 @@ import uuid
 
 from django.db import models
 
+from TaskEqualizer.settings import MAX_LENGTH_FAMILY_NAME
+
 
 class Family(models.Model):
     """Model for the family table."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    family_name = models.CharField(max_length=100)
+    family_name = models.CharField(max_length=MAX_LENGTH_FAMILY_NAME)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
