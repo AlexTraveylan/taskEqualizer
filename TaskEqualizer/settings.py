@@ -151,3 +151,13 @@ MIN_SECOND_FOR_TASK = 60 * 1
 # Token settings
 SECRET_KEY = str(os.getenv("SECRET_KEY"))
 TOKEN_NAME = "auth_token"
+
+# Fields restrictions settings
+MAX_LENGTH_FAMILY_NAME = 25
+MIN_LENGTH_FAMILY_NAME = 2
+MAX_LENGTH_USERNAME = 25
+MIN_LENGTH_USERNAME = 2
+MIN_POSSIBLE_TASK_NAME = 2
+MAX_POSSIBLE_TASK_NAME = 13
+PASSWORD_REGEX = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$"
+INVITATION_CODE_SIZE = 8
