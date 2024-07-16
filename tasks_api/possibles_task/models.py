@@ -7,7 +7,7 @@ class PossibleTask(models.Model):
     """Model for the possible_task table."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    possible_task_name = models.CharField(max_length=100)
+    possible_task_name = models.CharField(max_length=13)
     description = models.CharField(max_length=1000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
