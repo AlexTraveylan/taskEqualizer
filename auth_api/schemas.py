@@ -1,15 +1,49 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, field_validator
+
+from auth_api.validators import (
+    validate_family_name,
+    validate_password,
+    validate_username,
+)
+from TaskEqualizer.settings import INVITATION_CODE_SIZE
 
 
 class RegisterCreateSchema(BaseModel):
+    family_name: str
+    username: str
+    password: str
 
-    family_name: str = Field(min_lenght=5, max_length=100)
-    username: str = Field(min_lenght=5, max_length=100)
-    password: str = Field(min_lenght=5, max_length=100)
+    @field_validator("family_name")
+    def family_name_length(cls, value: str) -> str:
+        return validate_family_name(value)
+
+    @field_validator("username")
+    def username_length(cls, value: str) -> str:
+        return validate_username(value)
+
+    @field_validator("password")
+    def password_strength(cls, value: str) -> str:
+        return validate_password(value)
 
 
 class RegisterInviteSchema(BaseModel):
+    username: str
+    password: str
+    invitation_code: str
 
-    username: str = Field(min_lenght=5, max_length=100)
-    password: str = Field(min_lenght=5, max_length=100)
-    invitation_code: str = Field(min_lenght=5, max_length=10)
+    @field_validator("username")
+    def username_length(cls, value: str) -> str:
+        return validate_username(value)
+
+    @field_validator("password")
+    def password_strength(cls, value: str) -> str:
+        return validate_password(value)
+
+    @field_validator("invitation_code")
+    def invitation_code_length(cls, value: str) -> str:
+        if len(value) != INVITATION_CODE_SIZE:
+            raise ValueError(
+                f"Invitation code must be {INVITATION_CODE_SIZE} characters long"
+            )
+
+        return value.strip()
