@@ -2,6 +2,8 @@
 Module for the HeaderJwtToken class
 """
 
+from __future__ import annotations
+
 import datetime
 from functools import wraps
 from typing import TypedDict
@@ -9,12 +11,9 @@ from typing import TypedDict
 import jwt
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
-from dotenv import load_dotenv
 
 from TaskEqualizer.settings import SECRET_KEY, TOKEN_NAME
 from tasks_api.member.models import Member
-
-load_dotenv()
 
 
 class TokenContent(TypedDict):
@@ -25,7 +24,7 @@ class TokenContent(TypedDict):
 class HeaderJwtToken:
     """Class for the HeaderJwtToken object"""
 
-    def __init__(self, user_id: str, expiration: datetime.datetime = None):
+    def __init__(self, user_id: str, expiration: datetime.datetime = None) -> None:
         self.user_id = str(user_id)
         self.expiration = expiration or (
             datetime.datetime.now() + datetime.timedelta(days=1)
@@ -42,7 +41,7 @@ class HeaderJwtToken:
         return f"HeaderJwtToken(user_id={self.user_id}, expiration={self.expiration})"
 
     @classmethod
-    def from_dict(cls, data: dict):
+    def from_dict(cls, data: dict) -> HeaderJwtToken:
         """Create a HeaderJwtToken object from a dict"""
 
         expiration = data.get("expiration")
@@ -64,7 +63,7 @@ class HeaderJwtToken:
         )
 
     @classmethod
-    def from_jwt_token(cls, token: str) -> "HeaderJwtToken":
+    def from_jwt_token(cls, token: str) -> HeaderJwtToken:
         """Create a HeaderJwtToken object from a jwt token"""
         data = jwt.decode(token, key=SECRET_KEY, algorithms=["HS256"])
         token = cls.from_dict(data)
