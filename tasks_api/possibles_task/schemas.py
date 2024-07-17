@@ -14,5 +14,14 @@ class PossibleTaskSchemaIn(Schema):
     def validate_possible_task_name(cls, value):
         return validate_task_name(value)
 
+    @field_validator("description")
+    def validate_description(cls, value):
+        value = value.strip()
+
+        if len(value) > 1000:
+            raise ValueError("Description must be at most 1000 characters long")
+
+        return value
+
 
 PossibleTaskSchemaOut = create_schema(PossibleTask)

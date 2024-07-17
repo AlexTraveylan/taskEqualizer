@@ -13,10 +13,14 @@ def validate_family_name(value: str) -> str:
     value = value.strip()
 
     if len(value) < MIN_LENGTH_FAMILY_NAME:
-        raise ValueError("Family name must be at least 2 characters long")
+        raise ValueError(
+            f"Family name must be at least {MIN_LENGTH_FAMILY_NAME} characters long"
+        )
 
     if len(value) > MAX_LENGTH_FAMILY_NAME:
-        raise ValueError("Family name must be at most 25 characters long")
+        raise ValueError(
+            f"Family name must be at most {MAX_LENGTH_FAMILY_NAME} characters long"
+        )
 
     return value
 
@@ -25,10 +29,14 @@ def validate_username(value: str) -> str:
     value = value.strip()
 
     if len(value) < MIN_LENGTH_USERNAME:
-        raise ValueError("Username must be at least 2 characters long")
+        raise ValueError(
+            f"Username must be at least {MIN_LENGTH_USERNAME} characters long"
+        )
 
     if len(value) > MAX_LENGTH_USERNAME:
-        raise ValueError("Username must be at most 25 characters long")
+        raise ValueError(
+            f"Username must be at most {MAX_LENGTH_USERNAME} characters long"
+        )
 
     return value
 
