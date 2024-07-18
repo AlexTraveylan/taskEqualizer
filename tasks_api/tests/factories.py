@@ -45,5 +45,5 @@ class InvitationFactory(DjangoModelFactory):
     class Meta:
         model = Invitation
 
-    code = LazyAttribute(lambda o: "Test Code")
+    code = LazyAttribute(lambda o: "TESTCODE")
     family = SubFactory(FamilyFactory)
