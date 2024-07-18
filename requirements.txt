@@ -3,3 +3,4 @@ django-ninja
 PyJWT
 python-dotenv
 django-cors-headers 
+python-dateutil
