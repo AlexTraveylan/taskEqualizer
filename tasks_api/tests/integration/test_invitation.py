@@ -96,7 +96,7 @@ def test_clean_invitations(client, data_test):
 
     # We need to send the auth_token in the headers
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
-    response = client.get("/api/invitation/clean_invitations/", headers=headers)
+    response = client.delete("/api/invitation/clean_invitations/", headers=headers)
 
     assert response.status_code == 200
 

@@ -70,7 +70,7 @@ def delete_invitation(request: CustomRequest, invitation_id: str):
     return JsonResponse({"message": "Invitation deleted"}, status=200)
 
 
-@router.get("/clean_invitations/", tags=["invitation"])
+@router.delete("/clean_invitations/", tags=["invitation"])
 @login_token_required
 def clean_invitations(request: CustomRequest):
     """Delete all expired and unused invitations."""
