@@ -47,7 +47,7 @@ def test_get_valid_invitation_list(client, data_test):
 
     # We need to send the auth_token in the headers
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
-    response = client.get("/api/invitation/get_valid_list", headers=headers)
+    response = client.get("/api/invitation/get_valid_list/", headers=headers)
 
     assert response.status_code == 200
 

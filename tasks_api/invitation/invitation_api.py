@@ -40,7 +40,7 @@ def create_invitation(request: CustomRequest):
     return JsonResponse(new_invitation.to_dict(), status=201)
 
 
-@router.get("/get_valid_list", tags=["invitation"])
+@router.get("/get_valid_list/", tags=["invitation"])
 @login_token_required
 def get_valid_invitation_list(request: CustomRequest):
     """Get a list of valid invitations."""
