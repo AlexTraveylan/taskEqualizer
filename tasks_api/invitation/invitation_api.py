@@ -1,6 +1,7 @@
 import random
 
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from ninja import Router
 
@@ -53,3 +54,33 @@ def get_valid_invitation_list(request: CustomRequest):
     invitations = [invitation.to_dict() for invitation in not_expired_invitations]
 
     return JsonResponse({"data": invitations}, status=200)
+
+
+@router.delete("/{invitation_id}", tags=["invitation"])
+@login_token_required
+def delete_invitation(request: CustomRequest, invitation_id: str):
+    """Delete an invitation."""
+
+    invitation = get_object_or_404(
+        Invitation, id=invitation_id, family=request.member.family
+    )
+
+    invitation.delete()
+
+    return JsonResponse({"message": "Invitation deleted"}, status=200)
+
+
+@router.get("/clean_invitations/", tags=["invitation"])
+@login_token_required
+def clean_invitations(request: CustomRequest):
+    """Delete all expired and unused invitations."""
+
+    expired_invitations = Invitation.objects.filter(
+        expired_at__lt=timezone.now(), is_used=False, family=request.member.family
+    )
+
+    expired_invitations.delete()
+
+    return JsonResponse(
+        {"message": "Expired and unused invitations deleted"}, status=200
+    )

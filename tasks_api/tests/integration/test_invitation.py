@@ -55,3 +55,56 @@ def test_get_valid_invitation_list(client, data_test):
     body_response = response.json()
     assert len(body_response["data"]) == 1
     assert body_response["data"][0]["id"] == str(valid_code.id)
+
+
+@pytest.mark.django_db
+def test_delete_invitation(client, data_test):
+    """Test the deletion of an invitation code."""
+
+    invitation = InvitationFactory(family=data_test.family)
+
+    # We need to send the auth_token in the headers
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
+    response = client.delete(f"/api/invitation/{invitation.id}", headers=headers)
+
+    assert response.status_code == 200
+
+    # We check that the code is in the database
+    invitation = Invitation.objects.filter(id=invitation.id).first()
+
+    assert invitation is None
+
+
+@pytest.mark.django_db
+def test_clean_invitations(client, data_test):
+    """Test the deletion of expired and unused invitations."""
+
+    should_be_deleted_cause_perimed = InvitationFactory(
+        family=data_test.family, expired_at=timezone.now() - timezone.timedelta(days=1)
+    )
+    should_not_be_deleted_cause_active = InvitationFactory(
+        family=data_test.family, expired_at=timezone.now() + timezone.timedelta(days=1)
+    )
+    should_not_be_deleted_cause_used = InvitationFactory(
+        family=data_test.family,
+        expired_at=timezone.now() - timezone.timedelta(days=1),
+        is_used=True,
+    )
+    should_not_be_deleted_cause_not_family = InvitationFactory(
+        expired_at=timezone.now() + timezone.timedelta(days=1)
+    )
+
+    # We need to send the auth_token in the headers
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
+    response = client.get("/api/invitation/clean_invitations/", headers=headers)
+
+    assert response.status_code == 200
+
+    # We check that the code is in the database
+    invitations = Invitation.objects.all()
+
+    assert len(invitations) == 3
+    assert should_not_be_deleted_cause_active in invitations
+    assert should_not_be_deleted_cause_used in invitations
+    assert should_not_be_deleted_cause_not_family in invitations
+    assert should_be_deleted_cause_perimed not in invitations
