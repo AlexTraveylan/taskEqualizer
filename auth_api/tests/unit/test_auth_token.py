@@ -1,14 +1,15 @@
 import json
 import time
 import uuid
-from datetime import datetime, timedelta
 
 import pytest
 from django.http import Http404, JsonResponse
+from django.utils import timezone
 
 from auth_api.auth_token import CustomRequest, HeaderJwtToken, login_token_required
 from tasks_api.family.models import Family
 from tasks_api.member.models import Member
+from tasks_api.tests.factories import MemberFactory
 
 
 @pytest.fixture
@@ -20,7 +21,7 @@ def token():
 def test_to_dict(token):
     expected_dict = {
         "user_id": token.user_id,
-        "expiration": token.expiration.timestamp(),
+        "expiration": str(token.expiration),
     }
     assert token.to_dict() == expected_dict
 
@@ -28,7 +29,7 @@ def test_to_dict(token):
 def test_from_dict(token):
     data = {
         "user_id": token.user_id,
-        "expiration": token.expiration.timestamp(),
+        "expiration": str(token.expiration),
     }
     new_token = HeaderJwtToken.from_dict(data)
     assert new_token.user_id == token.user_id
@@ -54,7 +55,7 @@ def test_refresh(token):
 
 def test_is_expired(token):
     assert not token.is_expired()
-    token.expiration = datetime.now() - timedelta(days=1)
+    token.expiration = timezone.now() - timezone.timedelta(days=1)
     assert token.is_expired()
 
 
@@ -103,8 +104,9 @@ def test_login_token_required_with_missing_token(custom_request):
 
 @pytest.mark.django_db
 def test_login_token_required_with_expired_token(custom_request):
-    expired_token = HeaderJwtToken("test")
-    expired_token.expiration = datetime.now() - timedelta(hours=1)
+    member = MemberFactory()
+    expired_token = HeaderJwtToken(member.id)
+    expired_token.expiration = timezone.now() - timezone.timedelta(hours=1)
     custom_request.META["HTTP_AUTHORIZATION"] = f"Bearer {expired_token.to_jwt_token()}"
 
     @login_token_required

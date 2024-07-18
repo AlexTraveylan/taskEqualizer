@@ -1,7 +1,7 @@
 import json
-from datetime import datetime, timedelta
 
 import pytest
+from django.utils import timezone
 
 from TaskEqualizer.settings import TOKEN_NAME
 from tasks_api.models import Family, Invitation
@@ -58,7 +58,7 @@ def test_integr_register_with_invitation(client):
     Invitation.objects.create(
         family=family,
         code="TESTCODE",
-        expired_at=datetime.now() + timedelta(days=1),
+        expired_at=timezone.now() + timezone.timedelta(days=1),
     )
 
     # Register a user with the invitation

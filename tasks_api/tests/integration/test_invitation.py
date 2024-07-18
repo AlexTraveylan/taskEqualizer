@@ -1,7 +1,7 @@
 import re
-from datetime import datetime, timedelta
 
 import pytest
+from django.utils import timezone
 
 from tasks_api.invitation.models import Invitation
 from tasks_api.tests.factories import InvitationFactory
@@ -37,13 +37,13 @@ def test_get_valid_invitation_list(client, data_test):
     """Test the retrieval of valid invitation codes."""
 
     InvitationFactory(
-        family=data_test.family, expired_at=datetime.now() - timedelta(days=1)
+        family=data_test.family, expired_at=timezone.now() - timezone.timedelta(days=1)
     )
     valid_code = InvitationFactory(
-        family=data_test.family, expired_at=datetime.now() + timedelta(days=1)
+        family=data_test.family, expired_at=timezone.now() + timezone.timedelta(days=1)
     )
 
-    InvitationFactory(expired_at=datetime.now() + timedelta(days=1))
+    InvitationFactory(expired_at=timezone.now() + timezone.timedelta(days=1))
 
     # We need to send the auth_token in the headers
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}

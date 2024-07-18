@@ -1,7 +1,7 @@
 import random
-from datetime import datetime, timedelta
 
 from django.http import JsonResponse
+from django.utils import timezone
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
@@ -31,7 +31,8 @@ def create_invitation(request: CustomRequest):
     """Create an invitation."""
 
     new_code = create_random_invitation_code()
-    expire_date_one_week = datetime.now() + timedelta(days=7)
+    expire_date_one_week = timezone.now() + timezone.timedelta(days=7)
+    print(expire_date_one_week)
 
     new_invitation = Invitation.objects.create(
         code=new_code, family=request.member.family, expired_at=expire_date_one_week
@@ -46,7 +47,7 @@ def get_valid_invitation_list(request: CustomRequest):
     """Get a list of valid invitations."""
 
     not_expired_invitations = Invitation.objects.filter(
-        family=request.member.family, expired_at__gt=datetime.now()
+        family=request.member.family, expired_at__gt=timezone.now()
     )
 
     invitations = [invitation.to_dict() for invitation in not_expired_invitations]

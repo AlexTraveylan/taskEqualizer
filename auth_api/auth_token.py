@@ -4,13 +4,14 @@ Module for the HeaderJwtToken class
 
 from __future__ import annotations
 
-import datetime
 from functools import wraps
 from typing import TypedDict
 
 import jwt
+from dateutil import parser
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from TaskEqualizer.settings import SECRET_KEY, TOKEN_NAME
 from tasks_api.member.models import Member
@@ -18,24 +19,20 @@ from tasks_api.member.models import Member
 
 class TokenContent(TypedDict):
     user_id: str
-    expiration: float
+    expiration: str
 
 
 class HeaderJwtToken:
     """Class for the HeaderJwtToken object"""
 
-    def __init__(self, user_id: str, expiration: datetime.datetime = None) -> None:
+    def __init__(self, user_id: str, expiration: timezone.datetime = None) -> None:
         self.user_id = str(user_id)
-        self.expiration = expiration or (
-            datetime.datetime.now() + datetime.timedelta(days=1)
-        )
+        self.expiration = expiration or (timezone.now() + timezone.timedelta(days=1))
 
     def to_dict(self) -> TokenContent:
         """Convert the object to a dict"""
 
-        return TokenContent(
-            user_id=self.user_id, expiration=self.expiration.timestamp()
-        )
+        return TokenContent(user_id=self.user_id, expiration=str(self.expiration))
 
     def __repr__(self):
         return f"HeaderJwtToken(user_id={self.user_id}, expiration={self.expiration})"
@@ -48,7 +45,7 @@ class HeaderJwtToken:
         user_id = data["user_id"]
 
         if expiration:
-            expiration_date = datetime.datetime.fromtimestamp(expiration)
+            expiration_date = parser.isoparse(expiration)
             return cls(user_id, expiration_date)
 
         return cls(user_id)
@@ -71,11 +68,11 @@ class HeaderJwtToken:
 
     def refresh(self):
         """Refresh the token"""
-        self.expiration = datetime.datetime.now() + datetime.timedelta(days=1)
+        self.expiration = timezone.now() + timezone.timedelta(days=1)
 
     def is_expired(self):
         """Check if the token is expired"""
-        return datetime.datetime.now() > self.expiration
+        return timezone.now() > self.expiration
 
 
 # decorateur for endpoint that require a token

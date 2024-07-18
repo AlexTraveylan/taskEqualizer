@@ -1,9 +1,9 @@
 import json
-from datetime import datetime, timezone
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from pydantic import ValidationError
 
@@ -108,7 +108,7 @@ def register_with_invitation(request: HttpRequest):
     if invitation.is_used:
         return JsonResponse({"message": "Invitation already used"}, status=400)
 
-    if datetime.now(timezone.utc) > invitation.expired_at:
+    if timezone.now() > invitation.expired_at:
         return JsonResponse({"message": "Invitation expired"}, status=400)
 
     # Create the user
