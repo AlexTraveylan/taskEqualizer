@@ -61,9 +61,9 @@ def update_ephemeral_task(request: CustomRequest, ephemeral_task_id: str):
 def delete_ephemeral_task(request: CustomRequest, ephemeral_task_id: str):
     e_task = get_object_or_404(EphemeralTask, id=ephemeral_task_id)
 
-    if e_task.member is not None and e_task.member != request.member:
+    if e_task.member is not None:
         return JsonResponse(
-            {"message": "You are not allowed to access this ephemeral task."},
+            {"message": "Task already done, you can't delete it."},
             status=403,
         )
 
@@ -75,4 +75,4 @@ def delete_ephemeral_task(request: CustomRequest, ephemeral_task_id: str):
 
     e_task.delete()
 
-    return JsonResponse({"message": "Ephemeral Task deleted"}, status=204)
+    return JsonResponse({"message": "Ephemeral Task deleted"}, status=200)

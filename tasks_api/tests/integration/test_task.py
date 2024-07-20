@@ -59,15 +59,12 @@ def test_retrieve_task(client, data_test):
 def test_update_task(client, data_test):
     """Test the update of a task."""
 
-    payload = {"ended_at": "2021-01-01T00:00:00Z"}
-
     # We need to send the auth_token in the headers
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
     time.sleep(0.1)
 
     response = client.put(
         f"/api/task/{data_test.task.id}",
-        data=json.dumps(payload),
         headers=headers,
         content_type="application/json",
     )
