@@ -6,7 +6,7 @@ from TaskEqualizer.settings import MAX_EPHERMERAL_TASK_NAME, MIN_EPHERMERAL_TASK
 from tasks_api.ephemeral_task.models import EphemeralTask, ValueChoices
 
 
-class EphemeralTaskIn(Schema):
+class EphemeralTaskSchemaIn(Schema):
     ephemeral_task_name: str
     description: str
     value: int
@@ -44,4 +44,4 @@ class EphemeralTaskIn(Schema):
         return value
 
 
-PossibleTaskSchemaOut = create_schema(EphemeralTask)
+EphemeralTaskSchemaOut = create_schema(EphemeralTask)

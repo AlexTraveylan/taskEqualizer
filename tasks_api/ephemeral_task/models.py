@@ -24,6 +24,13 @@ class EphemeralTask(models.Model):
     family = models.ForeignKey(
         "Family", on_delete=models.CASCADE, related_name="ephemeral_task"
     )
+    member = models.ForeignKey(
+        "Member",
+        on_delete=models.CASCADE,
+        related_name="ephemeral_task",
+        null=True,
+        default=None,
+    )
 
     def __str__(self):
         return str(self.ephemeral_task_name)
@@ -36,6 +43,8 @@ class EphemeralTask(models.Model):
             "created_at": self.created_at,
             "value": self.value,
             "ended_at": self.ended_at,
+            "family": self.family.id,
+            "member": self.member.id if self.member else None,
         }
 
     class Meta:

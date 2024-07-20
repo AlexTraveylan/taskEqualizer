@@ -79,6 +79,19 @@ class HeaderJwtToken:
 
 
 class CustomRequest(HttpRequest):
+    """
+    A custom request object that contains the member and the auth token
+
+    Attributes:
+    ----------
+    member: Member
+        The member that made the request
+    auth_token: str
+        The auth token of the member
+    kwargs: dict
+        The kwargs of the HttpRequest
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.member: Member = None

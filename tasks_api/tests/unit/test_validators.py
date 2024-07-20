@@ -1,6 +1,6 @@
 import pytest
 
-from tasks_api.ephemeral_task.schemas import EphemeralTaskIn
+from tasks_api.ephemeral_task.schemas import EphemeralTaskSchemaIn
 from tasks_api.validators import validate_task_name
 
 
@@ -50,7 +50,7 @@ def test_validate_task_name_with_invalid_names(invalid_p_task_name):
 def test_validate_ephemeral_schema_with_valid_schema(
     ephemeral_task_name, description, value
 ):
-    e_task = EphemeralTaskIn(
+    e_task = EphemeralTaskSchemaIn(
         ephemeral_task_name=ephemeral_task_name,
         description=description,
         value=value,
@@ -80,7 +80,7 @@ def test_validate_ephemeral_schema_with_invalid_schema(
     ephemeral_task_name, description, value
 ):
     with pytest.raises(ValueError):
-        EphemeralTaskIn(
+        EphemeralTaskSchemaIn(
             ephemeral_task_name=ephemeral_task_name,
             description=description,
             value=value,
