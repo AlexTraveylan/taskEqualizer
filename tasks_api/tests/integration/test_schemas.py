@@ -169,3 +169,38 @@ def test_update_possible_task_with_invalid_name(invalid_p_task_name, client):
     )
 
     assert response.status_code == 422
+
+
+@pytest.mark.parametrize(
+    ("ephemeral_task_name", "description", "value"),
+    [
+        # Invalid ephemeral task name too short
+        ("T", "Task description", 1),
+        # Invalid ephemeral task name too long
+        ("T" * 26, "Task description 1", 2),
+        # Invalid description too long
+        ("Task 2", "D" * 1001, 5),
+        # Invalid value
+        ("Task 3", "Task description 3", 11),
+        ("Task 4", "Task description 4", 16),
+        ("Task 5", "Task description 5", 31),
+        ("Task 6", "Task description 6", 61),
+        ("Task 7", "Task description 7", 121),
+    ],
+)
+def test_create_ephemeral_task_with_invalid_data(
+    ephemeral_task_name, description, value, client
+):
+    payload = {
+        "ephemeral_task_name": ephemeral_task_name,
+        "description": description,
+        "value": value,
+    }
+
+    response = client.post(
+        "/api/ephemeral_task/",
+        data=json.dumps(payload),
+        content_type="application/json",
+    )
+
+    assert response.status_code == 422

@@ -1,6 +1,7 @@
 from factory import LazyAttribute, SubFactory
 from factory.django import DjangoModelFactory
 
+from tasks_api.ephemeral_task.models import EphemeralTask
 from tasks_api.invitation.models import Invitation
 from tasks_api.member.models import Member
 from tasks_api.models import Family
@@ -47,3 +48,14 @@ class InvitationFactory(DjangoModelFactory):
 
     code = LazyAttribute(lambda o: "TESTCODE")
     family = SubFactory(FamilyFactory)
+
+
+class EphemeralTaskFactory(DjangoModelFactory):
+    class Meta:
+        model = EphemeralTask
+
+    ephemeral_task_name = LazyAttribute(lambda o: "Test Ephemeral Task")
+    description = LazyAttribute(lambda o: "Ephemeral Task description")
+    value = LazyAttribute(lambda o: 5)
+    family = SubFactory(FamilyFactory)
+    member = SubFactory(MemberFactory)
