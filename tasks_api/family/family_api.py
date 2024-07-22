@@ -1,8 +1,14 @@
+from collections import defaultdict
+from datetime import date
+
+from django.db.models.functions import TruncDay
 from django.http import JsonResponse
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
+from tasks_api.ephemeral_task.models import EphemeralTask
 from tasks_api.family.schemas import FamilySchemaIn
+from tasks_api.task.models import Task
 
 router = Router()
 
@@ -90,6 +96,60 @@ def get_possibles_tasks_details(request: CustomRequest):
     ]
 
     return JsonResponse({"data": data}, status=200)
+
+
+@router.get("/tasks_by_date_by_member/", tags=["family"])
+@login_token_required
+def get_tasks_by_date_by_member(request: CustomRequest):
+    """Get tasks by date by member."""
+
+    filtered_tasks = Task.objects.filter(
+        duration_in_seconds__gt=0,
+        member__family=request.member.family,
+    ).prefetch_related("member")
+    annotated_tasks = filtered_tasks.annotate(day=TruncDay("created_at"))
+
+    tasks_by_day: dict[date, list[Task]] = defaultdict(list)
+    for task in annotated_tasks:
+        tasks_by_day[task.day].append(task)
+
+    result: dict[date, dict[str, list[dict]]] = {}
+
+    for day, tasks in tasks_by_day.items():
+        day = day.strftime("%Y-%m-%d")
+
+        for task in tasks:
+            if day not in result:
+                result[day] = defaultdict(list)
+
+            result[day][task.member.member_name].append(
+                {"duration": task.duration_in_seconds}
+            )
+
+    filtered_ephemeral_tasks = EphemeralTask.objects.filter(
+        family=request.member.family,
+        ended_at__isnull=False,
+    ).prefetch_related("member")
+    annotated_ephemeral_tasks = filtered_ephemeral_tasks.annotate(
+        day=TruncDay("ended_at")
+    )
+
+    ephemeral_tasks_by_day: dict[date, list[EphemeralTask]] = defaultdict(list)
+    for ephemeral_task in annotated_ephemeral_tasks:
+        ephemeral_tasks_by_day[ephemeral_task.day].append(ephemeral_task)
+
+    for day, ephemeral_tasks in ephemeral_tasks_by_day.items():
+        day = day.strftime("%Y-%m-%d")
+
+        for ephemeral_task in ephemeral_tasks:
+            if day not in result:
+                result[day] = defaultdict(list)
+
+            result[day][ephemeral_task.member.member_name].append(
+                {"duration": ephemeral_task.value}
+            )
+
+    return JsonResponse(result, status=200)
 
 
 @router.put("/", tags=["family"])
