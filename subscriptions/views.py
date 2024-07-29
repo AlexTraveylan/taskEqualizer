@@ -135,3 +135,11 @@ def stripe_webhook(request: HttpRequest):
         print("Unhandled event type {}".format(event["type"]))
 
     return JsonResponse({"status": "success"})
+
+
+@csrf_exempt
+def get_plans_informations(request: HttpRequest):
+    if request.method != "GET":
+        return JsonResponse({"error": "Method not allowed"}, status=405)
+
+    return JsonResponse(SUBSCRIPTION_PLANS_RESTRICTIONS, status=200)
