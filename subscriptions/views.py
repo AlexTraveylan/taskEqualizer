@@ -49,15 +49,14 @@ def create_checkout_session(request: CustomRequest):
             {"error": "Already subscribed to the BASIC plan"}, status=400
         )
 
-    amount_cent = (
-        SUBSCRIPTION_PLANS_RESTRICTIONS[plan]["amount_cent"]
-        * SUBSCRIPTION_PLANS_RESTRICTIONS[plan]["reduction"]
+    amount_cent = SUBSCRIPTION_PLANS_RESTRICTIONS[plan]["amount_cent"] * (
+        1 - SUBSCRIPTION_PLANS_RESTRICTIONS[plan]["reduction"]
     )
 
     if family_settings.subscription_plan == "BASIC" and plan == "PREMIUM":
         amount_cent -= (
             SUBSCRIPTION_PLANS_RESTRICTIONS["BASIC"]["amount_cent"]
-            * SUBSCRIPTION_PLANS_RESTRICTIONS["BASIC"]["reduction"]
+            * (1 - SUBSCRIPTION_PLANS_RESTRICTIONS["BASIC"]["reduction"])
         ) + CHANGE_PLAN_SURCHARGE
 
     payload = AmountSchemaIn(
