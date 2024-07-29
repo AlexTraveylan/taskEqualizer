@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "ninja",
     "auth_api",
     "corsheaders",
+    "subscriptions",
 ]
 
 MIDDLEWARE = [
@@ -163,3 +164,9 @@ MIN_EPHERMERAL_TASK_NAME = 2
 MAX_EPHERMERAL_TASK_NAME = 25
 PASSWORD_REGEX = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$"
 INVITATION_CODE_SIZE = 8
+
+
+# Stripe
+STRIP_PUBLISHABLE_KEY = os.getenv("STRIP_PUBLISHABLE_KEY")
+STRIP_SECRET_KEY = os.getenv("STRIP_SECRET_KEY")
+STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
