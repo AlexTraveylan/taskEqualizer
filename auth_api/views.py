@@ -11,6 +11,7 @@ from auth_api.auth_token import HeaderJwtToken
 from auth_api.schemas import RegisterCreateSchema, RegisterInviteSchema
 from TaskEqualizer.settings import TOKEN_NAME
 from tasks_api.family.models import Family
+from tasks_api.family_settings.models import FamilySettings
 from tasks_api.invitation.models import Invitation
 from tasks_api.member.models import Member
 
@@ -61,6 +62,7 @@ def register_create_family(request: HttpRequest):
         return JsonResponse({"message": "Username already exists"}, status=400)
 
     family = Family.objects.create(family_name=parsed_data.family_name)
+    FamilySettings.objects.create(family=family)
     user = User.objects.create_user(
         username=parsed_data.username, password=parsed_data.password
     )

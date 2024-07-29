@@ -10,6 +10,7 @@ class Member(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     member_name = models.CharField(max_length=MAX_LENGTH_USERNAME)
+    email = models.EmailField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     family = models.ForeignKey(
@@ -23,6 +24,7 @@ class Member(models.Model):
         return {
             "id": self.id,
             "member_name": self.member_name,
+            "email": self.email or "",
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "family": self.family.id,
