@@ -23,12 +23,15 @@ from auth_api.views import (
     register_create_family,
     register_with_invitation,
 )
-from tasks_api.views import api
+from subscriptions.views import create_checkout_session, stripe_webhook
+from tasks_api.views import api as tasks_api
 
 urlpatterns = [
-    path("api/", api.urls),
+    path("api/", tasks_api.urls),
     path("admin/", admin.site.urls),
     path("login", login, name="login"),
     path("register_create", register_create_family, name="register_create"),
     path("register_invite", register_with_invitation, name="register_invite"),
+    path("checkout_session", create_checkout_session, name="checkout_session"),
+    path("stripe_webhook", stripe_webhook, name="stripe_webhook"),
 ]
