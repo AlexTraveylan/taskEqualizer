@@ -2,6 +2,7 @@ from factory import LazyAttribute, SubFactory
 from factory.django import DjangoModelFactory
 
 from tasks_api.ephemeral_task.models import EphemeralTask
+from tasks_api.family_settings.models import FamilySettings
 from tasks_api.invitation.models import Invitation
 from tasks_api.member.models import Member
 from tasks_api.models import Family
@@ -59,3 +60,12 @@ class EphemeralTaskFactory(DjangoModelFactory):
     value = LazyAttribute(lambda o: 5)
     family = SubFactory(FamilyFactory)
     member = SubFactory(MemberFactory)
+
+
+class FamilySettingsFactory(DjangoModelFactory):
+    class Meta:
+        model = FamilySettings
+
+    family = SubFactory(FamilyFactory)
+    locale = "en"
+    subscription_plan = "free"
