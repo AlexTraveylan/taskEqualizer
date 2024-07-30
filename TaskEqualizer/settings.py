@@ -88,10 +88,20 @@ WSGI_APPLICATION = "TaskEqualizer.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+SUPABASE_USER = os.getenv("SUPABASE_USER")
+SUPABASE_HOST = os.getenv("SUPABASE_HOST")
+SUPABASE_PORT = os.getenv("SUPABASE_PORT")
+SUPABASE_DBNAME = os.getenv("SUPABASE_DBNAME")
+SUPABASE_PASSWORD = os.getenv("SUPABASE_PASSWORD")
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": SUPABASE_DBNAME,
+        "USER": SUPABASE_USER,
+        "PASSWORD": SUPABASE_PASSWORD,
+        "HOST": SUPABASE_HOST,
+        "PORT": SUPABASE_PORT,
     }
 }
 
