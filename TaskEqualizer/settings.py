@@ -94,16 +94,24 @@ SUPABASE_PORT = os.getenv("SUPABASE_PORT")
 SUPABASE_DBNAME = os.getenv("SUPABASE_DBNAME")
 SUPABASE_PASSWORD = os.getenv("SUPABASE_PASSWORD")
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": SUPABASE_DBNAME,
-        "USER": SUPABASE_USER,
-        "PASSWORD": SUPABASE_PASSWORD,
-        "HOST": SUPABASE_HOST,
-        "PORT": SUPABASE_PORT,
+if PRODUCTION is True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": SUPABASE_DBNAME,
+            "USER": SUPABASE_USER,
+            "PASSWORD": SUPABASE_PASSWORD,
+            "HOST": SUPABASE_HOST,
+            "PORT": SUPABASE_PORT,
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
