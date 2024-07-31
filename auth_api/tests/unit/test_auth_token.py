@@ -7,9 +7,11 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from auth_api.auth_token import CustomRequest, HeaderJwtToken, login_token_required
-from tasks_api.family.models import Family
-from tasks_api.member.models import Member
-from tasks_api.tests.factories import MemberFactory
+from tasks_api.tests.factories import (
+    FamilyFactory,
+    FamilySettingsFactory,
+    MemberFactory,
+)
 
 
 @pytest.fixture
@@ -68,8 +70,9 @@ def custom_request():
 def test_login_token_required_with_valid_token(custom_request):
     user_id = uuid.uuid4()
     valid_token = HeaderJwtToken(user_id)
-    family = Family.objects.create(family_name="test")
-    Member.objects.create(id=user_id, member_name="test", family=family)
+    family = FamilyFactory()
+    MemberFactory(id=user_id, family=family)
+    FamilySettingsFactory(family=family)
     custom_request.META["HTTP_AUTHORIZATION"] = f"Bearer {valid_token.to_jwt_token()}"
 
     @login_token_required
