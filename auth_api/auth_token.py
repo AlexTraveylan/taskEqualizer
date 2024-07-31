@@ -5,7 +5,7 @@ Module for the HeaderJwtToken class
 from __future__ import annotations
 
 from functools import wraps
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 import jwt
 from dateutil import parser
@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from TaskEqualizer.settings import SECRET_KEY, TOKEN_NAME
+from tasks_api.family_settings.models import FamilySettings
 from tasks_api.member.models import Member
 
 
@@ -96,6 +97,7 @@ class CustomRequest(HttpRequest):
         super().__init__(*args, **kwargs)
         self.member: Member = None
         self.auth_token: str = None
+        self.subcription_plan: Literal["FREE", "BASIC", "PREMIUM"] = None
 
 
 def login_token_required(func_):
@@ -138,6 +140,10 @@ def login_token_required(func_):
         # get the user from the token
         member = get_object_or_404(Member, id=decoded_token.user_id)
         request.member = member
+
+        # Get the subscription plan
+        family_settings = FamilySettings.objects.filter(family=member.family).first()
+        request.subcription_plan = family_settings.subscription_plan.upper()
 
         # refresh the token
         decoded_token.refresh()

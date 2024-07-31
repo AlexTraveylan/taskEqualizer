@@ -4,6 +4,12 @@ import pytest
 
 from auth_api.auth_token import HeaderJwtToken
 from tasks_api.models import Family, Member, PossibleTask, Task
+from tasks_api.tests.factories import (
+    FamilyFactory,
+    FamilySettingsFactory,
+    MemberFactory,
+    PossibleTaskFactory,
+)
 
 
 @dataclass
@@ -18,14 +24,10 @@ class DataTest:
 @pytest.fixture
 @pytest.mark.django_db
 def data_test():
-
-    family = Family.objects.create(family_name="Test Family")
-    member = Member.objects.create(member_name="Test Member", family=family)
-    p_task = PossibleTask.objects.create(
-        possible_task_name="Test Task",
-        description="Task created for tests",
-        family=family,
-    )
+    family = FamilyFactory()
+    FamilySettingsFactory(family=family)
+    member = MemberFactory(family=family)
+    p_task = PossibleTaskFactory(family=family)
     task = Task.objects.create(related_possible_task=p_task, member=member)
     token = HeaderJwtToken(member.id)
 
