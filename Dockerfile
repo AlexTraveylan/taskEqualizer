@@ -17,4 +17,4 @@
     EXPOSE 8000
 
     # Commande pour lancer l'app Django
-    CMD ["gunicorn", "--bind", "0.0.0.0:8000", "myproject.wsgi:application"]
+    CMD ["gunicorn", "--bind", "0.0.0.0:8000", "TaskEqualizer.wsgi:application"]

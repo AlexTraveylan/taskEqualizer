@@ -1,12 +1,24 @@
-version: '3.8'
+version: "3.8"
 
-  services:
-    web:
-      build:
-        context: .
-      ports:
-        - "8000:8000"
-      env_file:
-        - .env
-      volumes:
-        - .:/app
+services:
+  web:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - SECRET_KEY=${SECRET_KEY}
+      - PRODUCTION=${PRODUCTION}
+      - CLIENT_HOST=${CLIENT_HOST}
+      - STRIP_PUBLISHABLE_KEY=${STRIP_PUBLISHABLE_KEY}
+      - STRIP_SECRET_KEY=${STRIP_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - SUPABASE_PASSWORD=${SUPABASE_PASSWORD}
+      - SUPABASE_USER=${SUPABASE_USER}
+      - SUPABASE_HOST=${SUPABASE_HOST}
+      - SUPABASE_PORT=${SUPABASE_PORT}
+      - SUPABASE_DBNAME=${SUPABASE_DBNAME}
