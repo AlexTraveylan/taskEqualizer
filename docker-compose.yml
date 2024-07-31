@@ -1,5 +1,4 @@
 version: "3.8"
-
 services:
   web:
     build:
@@ -22,3 +21,17 @@ services:
       - SUPABASE_HOST=${SUPABASE_HOST}
       - SUPABASE_PORT=${SUPABASE_PORT}
       - SUPABASE_DBNAME=${SUPABASE_DBNAME}
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./cert.pem:/etc/nginx/cert.pem
+      - ./cert.key:/etc/nginx/cert.key
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
