@@ -6,3 +6,4 @@ django-cors-headers
 python-dateutil
 stripe
 psycopg2
+gunicorn
