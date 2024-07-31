@@ -32,8 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-#h0$$kor(d5pxxm1o3sa=0s-ywcfk8dt1xunlkb=sz7#60*9kq"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = False if PRODUCTION else True
-DEBUG = True
+DEBUG = False if PRODUCTION else True
 
 ALLOWED_HOSTS = ["alextraveylan.fr", "www.alextraveylan.fr"] if PRODUCTION else []
 
