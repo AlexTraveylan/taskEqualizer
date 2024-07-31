@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
+from subscriptions.sub_types import SUBSCRIPTION_PLANS_RESTRICTIONS
 from tasks_api.possibles_task.models import PossibleTask
 from tasks_api.possibles_task.schemas import PossibleTaskSchemaIn
 
@@ -13,6 +14,19 @@ router = Router()
 @login_token_required
 def create_possible_task(request: CustomRequest, payload: PossibleTaskSchemaIn):
     """Create a possible task."""
+
+    possibles_tasks = PossibleTask.objects.filter(family=request.member.family)
+
+    if (
+        len(possibles_tasks)
+        >= SUBSCRIPTION_PLANS_RESTRICTIONS[request.subcription_plan][
+            "max_possible_tasks"
+        ]
+    ):
+        return JsonResponse(
+            {"message": "You have reached the maximum number of possible tasks."},
+            status=403,
+        )
 
     family_id = request.member.family.id
 

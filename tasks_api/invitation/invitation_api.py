@@ -6,6 +6,7 @@ from django.utils import timezone
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
+from subscriptions.sub_types import SUBSCRIPTION_PLANS_RESTRICTIONS
 from tasks_api.invitation.models import Invitation
 
 router = Router()
@@ -30,6 +31,15 @@ def create_random_invitation_code() -> str:
 @login_token_required
 def create_invitation(request: CustomRequest):
     """Create an invitation."""
+
+    family_members = request.member.family.members.all()
+    if (
+        len(family_members)
+        >= SUBSCRIPTION_PLANS_RESTRICTIONS[request.subcription_plan]["max_members"]
+    ):
+        return JsonResponse(
+            {"message": "You have reached the maximum number of members."}, status=403
+        )
 
     new_code = create_random_invitation_code()
     expire_date_one_week = timezone.now() + timezone.timedelta(days=7)

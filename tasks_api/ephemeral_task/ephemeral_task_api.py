@@ -4,6 +4,7 @@ from django.utils import timezone
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
+from subscriptions.sub_types import SUBSCRIPTION_PLANS_RESTRICTIONS
 from tasks_api.ephemeral_task.models import EphemeralTask
 from tasks_api.ephemeral_task.schemas import (
     EphemeralTaskSchemaIn,
@@ -27,6 +28,21 @@ def get_all_ephemeral_tasks_for_family(request: CustomRequest):
 @login_token_required
 def create_ephemeral_task(request: CustomRequest, payload: EphemeralTaskSchemaIn):
     """Create a new ephemeral task."""
+
+    current_ephemeral_tasks = EphemeralTask.objects.filter(
+        family=request.member.family, ended_at=None
+    )
+
+    if (
+        len(current_ephemeral_tasks)
+        >= SUBSCRIPTION_PLANS_RESTRICTIONS[request.subcription_plan][
+            "max_ephemeral_tasks"
+        ]
+    ):
+        return JsonResponse(
+            {"message": "You have reached the maximum number of ephemeral tasks."},
+            status=403,
+        )
 
     task = EphemeralTask.objects.create(
         ephemeral_task_name=payload.ephemeral_task_name,
