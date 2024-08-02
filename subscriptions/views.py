@@ -57,7 +57,9 @@ def create_checkout_session(request: CustomRequest):
         amount_cent -= (
             SUBSCRIPTION_PLANS_RESTRICTIONS["BASIC"]["amount_cent"]
             * (1 - SUBSCRIPTION_PLANS_RESTRICTIONS["BASIC"]["reduction"])
-        ) + CHANGE_PLAN_SURCHARGE
+        ) - CHANGE_PLAN_SURCHARGE
+
+        print(amount_cent)
 
     payload = AmountSchemaIn(
         amount_cent=amount_cent,
