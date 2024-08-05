@@ -14,6 +14,11 @@ router = Router()
 def create_task(request: CustomRequest, payload: TaskSchemaIn):
     """Create a task."""
 
+    current_tasks = Task.objects.filter(member=request.member, ended_at=None)
+
+    if len(current_tasks) > 0:
+        return JsonResponse({"message": "You already have a current task."}, status=400)
+
     new_task = Task.objects.create(
         related_possible_task_id=payload.related_possible_task_id, member=request.member
     )

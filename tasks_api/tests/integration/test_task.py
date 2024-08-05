@@ -14,6 +14,10 @@ def test_create_task(client, data_test):
 
     payload = {"related_possible_task_id": str(data_test.possible_task.id)}
 
+    # Finish before previous task
+    data_test.task.ended_at = timezone.now()
+    data_test.task.save()
+
     # We need to send the auth_token in the headers
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
     response = client.post(
