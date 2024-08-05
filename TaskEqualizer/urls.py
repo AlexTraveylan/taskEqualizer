@@ -23,6 +23,7 @@ from auth_api.views import (
     register_create_family,
     register_with_invitation,
 )
+from emailmanager.views import contact_email_view
 from subscriptions.views import (
     create_checkout_session,
     get_plans_informations,
@@ -39,4 +40,5 @@ urlpatterns = [
     path("checkout_session", create_checkout_session, name="checkout_session"),
     path("stripe_webhook", stripe_webhook, name="stripe_webhook"),
     path("plans_informations", get_plans_informations, name="plans_informations"),
+    path("contact_form", contact_email_view, name="contact_form"),
 ]

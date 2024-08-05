@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "auth_api",
     "corsheaders",
     "subscriptions",
+    "emailmanager",
 ]
 
 MIDDLEWARE = [
@@ -188,3 +189,8 @@ INVITATION_CODE_SIZE = 8
 STRIP_PUBLISHABLE_KEY = os.getenv("STRIP_PUBLISHABLE_KEY")
 STRIP_SECRET_KEY = os.getenv("STRIP_SECRET_KEY")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+
+# Email
+RESEND_API_KEY = os.getenv("RESEND_API_KEY")
+MY_EMAIL = os.getenv("MY_EMAIL")
+DOMAIN_EMAIL = os.getenv("DOMAIN_EMAIL")
