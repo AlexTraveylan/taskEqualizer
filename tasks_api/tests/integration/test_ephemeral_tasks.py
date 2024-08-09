@@ -4,15 +4,15 @@ import pytest
 from django.utils import timezone
 
 from tasks_api.ephemeral_task.models import EphemeralTask
-from tasks_api.tests.factories import EphemeralTaskFactory
+from tasks_api.tests.factories import EphemeralTaskFactory, MemberFactory
 
 
 @pytest.mark.django_db
 def test_get_all_ephemeral_tasks_for_family(client, data_test):
     # should return tasks for the family of the user -> only 2 tasks
-    EphemeralTaskFactory(family=data_test.family)
-    EphemeralTaskFactory(family=data_test.family)
-    EphemeralTaskFactory()
+    EphemeralTaskFactory(family=data_test.family, member=data_test.member)
+    EphemeralTaskFactory(family=data_test.family, member=data_test.member)
+    EphemeralTaskFactory(member=MemberFactory(member_name="other_family_member"))
 
     # We need to send the auth_token in the headers
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}

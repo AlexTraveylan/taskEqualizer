@@ -37,7 +37,7 @@ def test_update_member(client, data_test):
 def test_delete_member(client, data_test):
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
-    member_to_delete = MemberFactory(family=data_test.family)
+    member_to_delete = MemberFactory(family=data_test.family, member_name="to_delete")
 
     response = client.delete(f"/api/member/{member_to_delete.id}", headers=headers)
 
@@ -56,7 +56,7 @@ def test_delete_member(client, data_test):
 def test_delete_member_fail_if_not_from_family(client, data_test):
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
-    member_to_delete = MemberFactory()
+    member_to_delete = MemberFactory(member_name="to_delete")
 
     response = client.delete(f"/api/member/{member_to_delete.id}", headers=headers)
 
