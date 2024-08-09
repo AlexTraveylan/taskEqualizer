@@ -12,6 +12,7 @@ class RegisterCreateSchema(BaseModel):
     family_name: str
     username: str
     password: str
+    locale: str
 
     @field_validator("family_name")
     def family_name_length(cls, value: str) -> str:

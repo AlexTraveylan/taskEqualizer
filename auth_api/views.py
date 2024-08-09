@@ -54,6 +54,7 @@ def register_create_family(request: HttpRequest):
         "family_name": data.get("family_name"),
         "username": data.get("username"),
         "password": data.get("password"),
+        "locale": data.get("locale"),
     }
 
     parsed_data: RegisterCreateSchema | None = None
@@ -67,7 +68,7 @@ def register_create_family(request: HttpRequest):
         return JsonResponse({"message": "Username already exists"}, status=400)
 
     family = Family.objects.create(family_name=parsed_data.family_name)
-    FamilySettings.objects.create(family=family)
+    FamilySettings.objects.create(family=family, locale=parsed_data.locale)
     user = User.objects.create_user(
         username=parsed_data.username, password=parsed_data.password
     )
