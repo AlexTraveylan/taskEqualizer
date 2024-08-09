@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 
+from emailmanager.crypto import decrypt
 from TaskEqualizer.settings import MAX_LENGTH_USERNAME
 
 
@@ -24,7 +25,7 @@ class Member(models.Model):
         return {
             "id": self.id,
             "member_name": self.member_name,
-            "email": self.email or "",
+            "email": decrypt(self.email) or "",
             "created_at": self.created_at,
             "updated_at": self.updated_at,
             "family": self.family.id,
@@ -34,3 +35,6 @@ class Member(models.Model):
         """Meta class for the Member model."""
 
         db_table = "member"
+
+    def get_email(self):
+        return decrypt(self.email)
