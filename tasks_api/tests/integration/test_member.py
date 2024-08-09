@@ -1,6 +1,7 @@
 import json
 
 import pytest
+from django.contrib.auth.models import User
 
 from tasks_api.member.models import Member
 from tasks_api.tests.factories import MemberFactory
@@ -38,6 +39,7 @@ def test_delete_member(client, data_test):
     headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
 
     member_to_delete = MemberFactory(family=data_test.family, member_name="to_delete")
+    User.objects.create_user(username="to_delete", password="ValidPassword123*")
 
     response = client.delete(f"/api/member/{member_to_delete.id}", headers=headers)
 

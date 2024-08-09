@@ -1,3 +1,5 @@
+from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import JsonResponse
 from ninja import Router
 
@@ -22,6 +24,7 @@ def who_i_am(request: CustomRequest):
 
 
 @router.put("/", tags=["member"])
+@transaction.atomic
 @login_token_required
 def update_member(request: CustomRequest, payload: MemberSchemaIn):
     """Update a member."""
@@ -47,6 +50,7 @@ def update_member(request: CustomRequest, payload: MemberSchemaIn):
 
 
 @router.delete("/{member_id}", tags=["member"])
+@transaction.atomic
 @login_token_required
 def delete_member(request: CustomRequest, member_id: str):
     """Delete a member."""
@@ -57,7 +61,10 @@ def delete_member(request: CustomRequest, member_id: str):
         return JsonResponse({"message": "Member not found."}, status=404)
 
     member = members_in_family.get(id=member_id)
+    user = User.objects.get(username=member.member_name)
+    user.delete()
     member.delete()
+
     response = JsonResponse({"message": "Member deleted successfully."}, status=200)
 
     return response
