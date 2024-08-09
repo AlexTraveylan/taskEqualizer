@@ -1,5 +1,5 @@
 from ninja.orm import create_schema
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
 from auth_api.schemas import validate_username
 from emailmanager.crypto import encrypt
@@ -9,7 +9,7 @@ from tasks_api.validators import validate_email
 
 class MemberSchemaIn(BaseModel):
     member_name: str
-    email: EmailStr | None = Field(default=None)
+    email: str | None = Field(default=None)
 
     @field_validator("member_name")
     def validate_member_name(cls, value: str) -> str:
