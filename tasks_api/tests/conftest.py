@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 import pytest
+from django.contrib.auth.models import User
 
 from auth_api.auth_token import HeaderJwtToken
 from tasks_api.models import Family, Member, PossibleTask, Task
@@ -27,6 +28,7 @@ def data_test():
     family = FamilyFactory()
     FamilySettingsFactory(family=family)
     member = MemberFactory(family=family)
+    User.objects.create_user(username=member.member_name, password="ValidPassword123*")
     p_task = PossibleTaskFactory(family=family)
     task = Task.objects.create(related_possible_task=p_task, member=member)
     token = HeaderJwtToken(member.id)
