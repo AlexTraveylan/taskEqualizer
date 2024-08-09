@@ -56,7 +56,7 @@ def create_invitation(request: CustomRequest):
     return JsonResponse(new_invitation.to_dict(), status=201)
 
 
-@router.post("/with_email", tags=["invitation"])
+@router.post("/with_email/", tags=["invitation"])
 @login_token_required
 def create_invitation_with_email(
     request: CustomRequest, payload: InvitationWithEmailIn
