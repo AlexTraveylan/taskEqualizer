@@ -10,7 +10,7 @@ class Member(models.Model):
     """Model for the member table."""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    member_name = models.CharField(max_length=MAX_LENGTH_USERNAME)
+    member_name = models.CharField(max_length=MAX_LENGTH_USERNAME, unique=True)
     email = models.EmailField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

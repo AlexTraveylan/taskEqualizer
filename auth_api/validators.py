@@ -38,6 +38,9 @@ def validate_username(value: str) -> str:
             f"Username must be at most {MAX_LENGTH_USERNAME} characters long"
         )
 
+    if "@" in value:
+        raise ValueError("Username cannot contain the @ symbol.")
+
     return value
 
 

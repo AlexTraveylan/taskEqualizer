@@ -24,7 +24,12 @@ def login(request: HttpRequest):
     data = json.loads(request.body)
     username = data.get("username")
     password = data.get("password")
+
+    if "@" in username:
+        username = User.objects.get(email=username).username
+
     user = authenticate(username=username, password=password)
+
     if user is not None:
         member = Member.objects.filter(member_name=user.username).first()
         token = HeaderJwtToken(user_id=member.id)

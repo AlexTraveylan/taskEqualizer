@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.models import User
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
@@ -46,5 +47,9 @@ def confirm_email_view(request: HttpRequest, token: str):
 
     confirmation.member.email = confirmation.get_email()
     confirmation.member.save()
+
+    user = User.objects.get(username=confirmation.member.member_name)
+    user.email = confirmation.get_email()
+    user.save()
 
     return JsonResponse({"message": "Email confirmed"}, status=200)
