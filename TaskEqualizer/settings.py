@@ -197,7 +197,8 @@ RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 MY_EMAIL = os.getenv("MY_EMAIL")
 DOMAIN_EMAIL = os.getenv("DOMAIN_EMAIL")
 CONFIRMATION_URL = f"{HOST}/confirm"
-REGISTER_WITH_CODE_URL = CLIENT_HOST + "/auth-page/register-with-invitation"
+if CLIENT_HOST is not None:
+    REGISTER_WITH_CODE_URL = CLIENT_HOST + "/auth-page/register-with-invitation"
 
 # Sécurity
 AES_KEY = base64.b64decode(os.getenv("AES_KEY"))
