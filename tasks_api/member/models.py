@@ -37,4 +37,7 @@ class Member(models.Model):
         db_table = "member"
 
     def get_email(self):
+        if self.email is None:
+            return None
+
         return decrypt(self.email)
