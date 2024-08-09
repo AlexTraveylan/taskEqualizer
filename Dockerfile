@@ -10,11 +10,11 @@ COPY requirements.txt .
 # Installer les dépendances
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Lancer les migrations
-RUN python manage.py migrate
-
 # Copier le contenu du répertoire courant dans le répertoire de travail
 COPY . .
+
+# Lancer les migrations
+RUN python manage.py migrate
 
 # Exposer le port utilisé par l'app Django
 EXPOSE 8000
