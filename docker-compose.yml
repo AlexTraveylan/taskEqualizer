@@ -20,6 +20,10 @@ services:
       - SUPABASE_HOST=${SUPABASE_HOST}
       - SUPABASE_PORT=${SUPABASE_PORT}
       - SUPABASE_DBNAME=${SUPABASE_DBNAME}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - MY_EMAIL=${MY_EMAIL}
+      - DOMAIN_EMAIL=${DOMAIN_EMAIL}
+      - AES_KEY=${AES_KEY}
 
   nginx:
     build:
