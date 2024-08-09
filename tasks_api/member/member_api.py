@@ -29,6 +29,8 @@ def who_i_am(request: CustomRequest):
 def update_member(request: CustomRequest, payload: MemberSchemaIn):
     """Update a member."""
 
+    print(payload)
+
     if payload.email is not None:
         token = generate_confirmation_token()
         confirmation = EmailConfirmationToken.objects.create(
@@ -43,6 +45,14 @@ def update_member(request: CustomRequest, payload: MemberSchemaIn):
             to=confirmation.get_email(),
         )
 
+    user = User.objects.filter(username=payload.member_name)
+
+    if request.member.member_name != payload.member_name and len(user) > 0:
+        return JsonResponse({"message": "Username already exists."}, status=400)
+
+    user = User.objects.get(username=request.member.member_name)
+    user.username = payload.member_name
+    user.save()
     request.member.member_name = payload.member_name
     request.member.save()
 
