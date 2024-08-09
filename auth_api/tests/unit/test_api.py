@@ -69,6 +69,7 @@ def test_register_succes():
             "family_name": "testfamily",
             "username": "newuser",
             "password": "ValidPassword123*",
+            "locale": "en",
         }
     )
 
@@ -114,6 +115,7 @@ def test_register_fail_user_already_exist():
             "family_name": "testfamily",
             "username": "testuser",
             "password": "ValidPassword123*",
+            "locale": "en",
         }
     )
 

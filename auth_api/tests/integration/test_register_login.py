@@ -13,6 +13,7 @@ def test_integr_register_create_family(client):
         "family_name": "Test Family",
         "username": "test_user",
         "password": "ValidPassword123*",
+        "locale": "en",
     }
 
     response = client.post(
@@ -29,6 +30,7 @@ def test_integr_login(client):
         "family_name": "Test Family",
         "username": "test_user",
         "password": "ValidPassword123*",
+        "locale": "en",
     }
 
     response_register = client.post(
