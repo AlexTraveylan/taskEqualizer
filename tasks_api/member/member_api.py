@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
+from emailmanager.crypto import encrypt
 from tasks_api.member.schemas import MemberSchemaIn
 
 router = Router()
@@ -19,6 +20,9 @@ def who_i_am(request: CustomRequest):
 @login_token_required
 def update_member(request: CustomRequest, payload: MemberSchemaIn):
     """Update a member."""
+
+    if payload.email is not None:
+        request.member.email = encrypt(payload.email)
 
     request.member.member_name = payload.member_name
     request.member.save()
