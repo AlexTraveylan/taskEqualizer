@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import base64
 import os
 from pathlib import Path
 
@@ -194,3 +195,6 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 MY_EMAIL = os.getenv("MY_EMAIL")
 DOMAIN_EMAIL = os.getenv("DOMAIN_EMAIL")
+
+# Sécurity
+AES_KEY = base64.b64decode(os.getenv("AES_KEY"))
