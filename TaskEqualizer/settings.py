@@ -201,4 +201,6 @@ if CLIENT_HOST is not None:
     REGISTER_WITH_CODE_URL = CLIENT_HOST + "/auth-page/register-with-invitation"
 
 # Sécurity
-AES_KEY = base64.b64decode(os.getenv("AES_KEY"))
+AES_KEY_BASE64 = os.getenv("AES_KEY")
+if AES_KEY_BASE64 is not None:
+    AES_KEY = base64.b64decode(os.getenv("AES_KEY"))
