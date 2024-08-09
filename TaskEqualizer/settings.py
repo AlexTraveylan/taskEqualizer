@@ -35,6 +35,7 @@ SECRET_KEY = "django-insecure-#h0$$kor(d5pxxm1o3sa=0s-ywcfk8dt1xunlkb=sz7#60*9kq
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if PRODUCTION else True
 
+HOST = "www.alextraveylan.fr" if PRODUCTION else "127.0.0.1"
 ALLOWED_HOSTS = ["alextraveylan.fr", "www.alextraveylan.fr"] if PRODUCTION else []
 
 
@@ -195,6 +196,7 @@ STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 MY_EMAIL = os.getenv("MY_EMAIL")
 DOMAIN_EMAIL = os.getenv("DOMAIN_EMAIL")
+CONFIRMATION_URL = f"{HOST}/confirm"
 
 # Sécurity
 AES_KEY = base64.b64decode(os.getenv("AES_KEY"))

@@ -1,8 +1,13 @@
 import base64
+import secrets
 
 from cryptography.fernet import Fernet
 
 from TaskEqualizer.settings import AES_KEY
+
+
+def generate_confirmation_token() -> str:
+    return secrets.token_urlsafe(nbytes=32)
 
 
 def encrypt(string_to_encrypt: str, key: bytes = AES_KEY) -> str:

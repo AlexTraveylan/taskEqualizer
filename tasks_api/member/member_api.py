@@ -2,7 +2,12 @@ from django.http import JsonResponse
 from ninja import Router
 
 from auth_api.auth_token import CustomRequest, login_token_required
-from emailmanager.crypto import encrypt
+from emailmanager.crypto import generate_confirmation_token
+from emailmanager.models import EmailConfirmationToken
+from emailmanager.send_email import (
+    html_wrapper_for_confirmation_email_with_token,
+    send_contact_message,
+)
 from tasks_api.member.schemas import MemberSchemaIn
 
 router = Router()
@@ -22,7 +27,18 @@ def update_member(request: CustomRequest, payload: MemberSchemaIn):
     """Update a member."""
 
     if payload.email is not None:
-        request.member.email = encrypt(payload.email)
+        token = generate_confirmation_token()
+        confirmation = EmailConfirmationToken.objects.create(
+            member=request.member,
+            encrypted_email=payload.email,
+            token=token,
+        )
+        html = html_wrapper_for_confirmation_email_with_token(token)
+        send_contact_message(
+            subject="TaskEqualizer - Confirm your email address",
+            html=html,
+            to=confirmation.get_email(),
+        )
 
     request.member.member_name = payload.member_name
     request.member.save()
