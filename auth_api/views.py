@@ -1,7 +1,9 @@
 import json
+from typing import TypedDict
 
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.http import HttpRequest, JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -14,6 +16,28 @@ from tasks_api.family.models import Family
 from tasks_api.family_settings.models import FamilySettings
 from tasks_api.invitation.models import Invitation
 from tasks_api.member.models import Member
+from tasks_api.possibles_task.models import PossibleTask
+
+
+class PTaskItem(TypedDict):
+    task_name: str
+    description: str
+
+
+FIRST_POSSIBLE_TASKS: dict[str, PTaskItem] = {
+    "fr": {
+        "task_name": "Cuisine",
+        "description": "Faire la cuisine, ou netoyer la cuisine",
+    },
+    "en": {"task_name": "Cook", "description": "Cook, or bake"},
+    "de": {"task_name": "Kochen", "description": "Kochen, oder Backen"},
+}
+
+SECOND_POSSIBLE_TASKS: dict[str, PTaskItem] = {
+    "fr": {"task_name": "Aspirateur", "description": "Passer l'aspirateur"},
+    "en": {"task_name": "Aspirator", "description": "Pass the aspirator"},
+    "de": {"task_name": "Aspirator", "description": "Aspirator durchführen"},
+}
 
 
 @csrf_exempt
@@ -43,6 +67,7 @@ def login(request: HttpRequest):
 
 
 @csrf_exempt
+@transaction.atomic
 def register_create_family(request: HttpRequest):
     """Register a new user."""
 
@@ -69,10 +94,23 @@ def register_create_family(request: HttpRequest):
 
     family = Family.objects.create(family_name=parsed_data.family_name)
     FamilySettings.objects.create(family=family, locale=parsed_data.locale)
+
+    PossibleTask.objects.create(
+        possible_task_name=FIRST_POSSIBLE_TASKS[parsed_data.locale]["task_name"],
+        description=FIRST_POSSIBLE_TASKS[parsed_data.locale]["description"],
+        family=family,
+    )
+    PossibleTask.objects.create(
+        possible_task_name=SECOND_POSSIBLE_TASKS[parsed_data.locale]["task_name"],
+        description=SECOND_POSSIBLE_TASKS[parsed_data.locale]["description"],
+        family=family,
+    )
+
     user = User.objects.create_user(
         username=parsed_data.username, password=parsed_data.password
     )
     member = Member.objects.create(member_name=user.username, family=family)
+
     token = HeaderJwtToken(user_id=member.id)
     response = JsonResponse(
         {"message": "User created", TOKEN_NAME: token.to_jwt_token()}, status=201
@@ -82,6 +120,7 @@ def register_create_family(request: HttpRequest):
 
 
 @csrf_exempt
+@transaction.atomic
 def register_with_invitation(request: HttpRequest):
     """Register a new user with an invitation code."""
 
