@@ -29,9 +29,7 @@ def who_i_am(request: CustomRequest):
 def update_member(request: CustomRequest, payload: MemberSchemaIn):
     """Update a member."""
 
-    print(payload)
-
-    if payload.email is not None:
+    if payload.email is not None and payload.email != request.member.email:
         token = generate_confirmation_token()
         confirmation = EmailConfirmationToken.objects.create(
             member=request.member,
