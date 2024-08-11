@@ -3,6 +3,7 @@ import re
 import pytest
 from django.utils import timezone
 
+from tasks_api.family_settings.models import FamilySettings
 from tasks_api.invitation.models import Invitation
 from tasks_api.tests.factories import InvitationFactory
 
@@ -108,3 +109,45 @@ def test_clean_invitations(client, data_test):
     assert should_not_be_deleted_cause_used in invitations
     assert should_not_be_deleted_cause_not_family in invitations
     assert should_be_deleted_cause_perimed not in invitations
+
+
+@pytest.mark.django_db
+def test_create_invitation_with_max_invitations(client, data_test):
+    """Test the deletion of expired and unused invitations."""
+
+    # Given a family with 1 member and 1 invitation active with FREE plan (max_members = 2)
+    InvitationFactory(
+        family=data_test.family,
+        is_used=False,
+        expired_at=timezone.now() + timezone.timedelta(days=1),
+    )
+
+    # When I try to create a new invitation
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
+    response = client.get("/api/invitation/", headers=headers)
+
+    # Then I should get a 403 error cause he can use the still active invitation
+    assert response.status_code == 403
+
+
+@pytest.mark.django_db
+def test_create_invitation_but_now_with_basic_plan(client, data_test):
+    """Test the deletion of expired and unused invitations."""
+
+    # Given a family with 1 member and 1 invitation active with BASIC plan (max_members = 3)
+    settings = FamilySettings.objects.filter(family=data_test.family).first()
+    settings.subscription_plan = "BASIC"
+    settings.save()
+
+    InvitationFactory(
+        family=data_test.family,
+        is_used=False,
+        expired_at=timezone.now() + timezone.timedelta(days=1),
+    )
+
+    # When I try to create a new invitation
+    headers = {"Authorization": f"Bearer {data_test.token.to_jwt_token()}"}
+    response = client.get("/api/invitation/", headers=headers)
+
+    # Then I should get a 201 response, because he can have a 3rd member
+    assert response.status_code == 201

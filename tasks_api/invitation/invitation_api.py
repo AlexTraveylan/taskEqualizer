@@ -38,12 +38,28 @@ def create_invitation(request: CustomRequest):
     """Create an invitation."""
 
     family_members = request.member.family.members.all()
-    if (
-        len(family_members)
-        >= SUBSCRIPTION_PLANS_RESTRICTIONS[request.subcription_plan]["max_members"]
-    ):
+
+    members_could_join = (
+        SUBSCRIPTION_PLANS_RESTRICTIONS[request.subcription_plan]["max_members"]
+        - family_members.count()
+    )
+
+    if members_could_join <= 0:
         return JsonResponse(
             {"message": "You have reached the maximum number of members."}, status=403
+        )
+
+    current_valid_invitations = Invitation.objects.filter(
+        family=request.member.family, expired_at__gt=timezone.now(), is_used=False
+    )
+
+    possible_in_use_invitations = current_valid_invitations.count()
+    max_current_invitations = members_could_join - possible_in_use_invitations
+
+    if max_current_invitations <= 0:
+        return JsonResponse(
+            {"message": "You have reached the maximum number of invitations."},
+            status=403,
         )
 
     new_code = create_random_invitation_code()
@@ -64,12 +80,28 @@ def create_invitation_with_email(
     """Create an invitation with email."""
 
     family_members = request.member.family.members.all()
-    if (
-        len(family_members)
-        >= SUBSCRIPTION_PLANS_RESTRICTIONS[request.subcription_plan]["max_members"]
-    ):
+
+    members_could_join = (
+        SUBSCRIPTION_PLANS_RESTRICTIONS[request.subcription_plan]["max_members"]
+        - family_members.count()
+    )
+
+    if members_could_join <= 0:
         return JsonResponse(
             {"message": "You have reached the maximum number of members."}, status=403
+        )
+
+    current_valid_invitations = Invitation.objects.filter(
+        family=request.member.family, expired_at__gt=timezone.now(), is_used=False
+    )
+
+    possible_in_use_invitations = current_valid_invitations.count()
+    max_current_invitations = members_could_join - possible_in_use_invitations
+
+    if max_current_invitations <= 0:
+        return JsonResponse(
+            {"message": "You have reached the maximum number of invitations."},
+            status=403,
         )
 
     new_code = create_random_invitation_code()
