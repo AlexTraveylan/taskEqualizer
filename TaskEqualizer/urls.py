@@ -23,7 +23,12 @@ from auth_api.views import (
     register_create_family,
     register_with_invitation,
 )
-from emailmanager.views import confirm_email_view, contact_email_view
+from emailmanager.views import (
+    confirm_email_view,
+    contact_email_view,
+    request_password_reset,
+    update_password,
+)
 from subscriptions.views import (
     create_checkout_session,
     get_plans_informations,
@@ -42,4 +47,6 @@ urlpatterns = [
     path("plans_informations", get_plans_informations, name="plans_informations"),
     path("contact_form", contact_email_view, name="contact_form"),
     path("confirm/<str:token>", confirm_email_view, name="confirm_email"),
+    path("password_reset", request_password_reset, name="password_reset"),
+    path("update_password", update_password, name="update_password"),
 ]

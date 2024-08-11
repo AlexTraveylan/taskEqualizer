@@ -198,6 +198,7 @@ MY_EMAIL = os.getenv("MY_EMAIL")
 DOMAIN_EMAIL = os.getenv("DOMAIN_EMAIL")
 CONFIRMATION_URL = f"{HOST}/confirm"
 REGISTER_WITH_CODE_URL = CLIENT_HOST + "/auth-page/register-with-invitation"
+RESET_PASSWORD_URL = CLIENT_HOST + "/auth-page/reset-password"
 
 # Sécurity
 AES_KEY = base64.b64decode(os.getenv("AES_KEY"))

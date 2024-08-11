@@ -6,6 +6,7 @@ from TaskEqualizer.settings import (
     MY_EMAIL,
     REGISTER_WITH_CODE_URL,
     RESEND_API_KEY,
+    RESET_PASSWORD_URL,
 )
 
 resend.api_key = RESEND_API_KEY
@@ -207,6 +208,78 @@ def html_wrapper_for_code_invitation(
         </div>
         <div class="footer">
             <p>This is an automated email. Please do not reply.</p>
+        </div>
+    </body>
+    </html>
+    """
+    return html
+
+
+def html_wrapper_for_password_reset(reset_token: str, user_pk: str) -> str:
+    reset_url = f"{RESET_PASSWORD_URL}?reset_token={reset_token}&user_pk={user_pk}"
+    html = f"""
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TaskEqualizer - Réinitialisation de votre mot de passe</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }}
+            .container {{
+                background-color: #f9f9f9;
+                border: 1px solid #e0e0e0;
+                border-radius: 5px;
+                padding: 20px;
+            }}
+            h1 {{
+                color: #2c3e50;
+                border-bottom: 2px solid #3498db;
+                padding-bottom: 10px;
+            }}
+            .message {{
+                background-color: #ffffff;
+                border-left: 4px solid #3498db;
+                padding: 15px;
+                margin-top: 20px;
+            }}
+            .button {{
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #3498db;
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-top: 20px;
+            }}
+            .footer {{
+                margin-top: 20px;
+                font-size: 0.8em;
+                color: #7f8c8d;
+                text-align: center;
+            }}
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Reset your password</h1>
+            <p>You have requested the reset of your password. Please click on the link below to proceed :</p>
+            <div class="message">
+                <a href="{reset_url}" class="button">Reset my password</a>
+            </div>
+            <p>If you have not requested this reset, please ignore this email.</p>
+            <p>Or you can copy and paste the following link in your browser :</p>
+            <p>{reset_url}</p>
+            <div class="footer">
+                <p>This email has been sent automatically. Please do not reply.</p>
+            </div>
         </div>
     </body>
     </html>
