@@ -159,7 +159,7 @@ def get_tasks_by_date_by_member(request: CustomRequest):
                 result[day] = defaultdict(list)
 
             result[day][ephemeral_task.member.member_name].append(
-                {"duration": ephemeral_task.value}
+                {"duration": ephemeral_task.value * 60}
             )
 
     return JsonResponse(result, status=200)
