@@ -58,7 +58,7 @@ def get_tasks_by_members(request: CustomRequest):
     for member in members:
         tasks = [task.to_dict() for task in member.tasks.all()]
         ephemeral_tasks = [
-            ephemeral_task.to_taks_like_dict()
+            ephemeral_task.to_tasks_like_dict()
             for ephemeral_task in member.ephemeral_task.all()
         ]
 
@@ -77,26 +77,35 @@ def get_tasks_by_members(request: CustomRequest):
 def get_possibles_tasks_details(request: CustomRequest):
     """Get possibles tasks details."""
 
-    possible_tasks = request.member.family.possible_tasks.all()
+    possible_tasks_id = [task.id for task in request.member.family.possible_tasks.all()]
+    possible_tasks_id.append("ephemeral_task")
     members = request.member.family.members.all()
-    tasks = {member: member.tasks.all() for member in members}
+
+    tasks = {}
+    for member in members:
+        member_tasks = list(member.tasks.all())
+        member_ephemeral_tasks = list(member.ephemeral_task.all())
+        tasks[member] = member_tasks + member_ephemeral_tasks
 
     data = [
         {
-            "p_task_id": p_task.id,
+            "p_task_id": p_task_id,
             "members": [
                 {
                     "member_name": member.member_name,
                     "tasks": [
-                        task.to_dict()
+                        t_dict
                         for task in tasks[member]
-                        if task.related_possible_task == p_task
+                        if (t_dict := task.to_tasks_like_dict())[
+                            "related_possible_task"
+                        ]
+                        == p_task_id
                     ],
                 }
                 for member in members
             ],
         }
-        for p_task in possible_tasks
+        for p_task_id in possible_tasks_id
     ]
 
     return JsonResponse({"data": data}, status=200)

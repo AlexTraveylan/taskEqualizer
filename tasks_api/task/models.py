@@ -44,6 +44,9 @@ class Task(models.Model):
             "duration": self.duration_in_seconds,
         }
 
+    def to_tasks_like_dict(self):
+        return self.to_dict()
+
     def __str__(self):
         return ", ".join([f"{key}={value}" for key, value in self.to_dict().items()])
 

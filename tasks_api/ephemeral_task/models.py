@@ -47,7 +47,7 @@ class EphemeralTask(models.Model):
             "member": self.member.id if self.member else None,
         }
 
-    def to_taks_like_dict(self):
+    def to_tasks_like_dict(self):
         return {
             "id": self.id,
             "related_possible_task": "ephemeral_task",
