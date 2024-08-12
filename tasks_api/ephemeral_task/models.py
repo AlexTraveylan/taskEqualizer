@@ -47,5 +47,16 @@ class EphemeralTask(models.Model):
             "member": self.member.id if self.member else None,
         }
 
+    def to_taks_like_dict(self):
+        return {
+            "id": self.id,
+            "related_possible_task": "ephemeral_task",
+            "created_at": self.created_at,
+            "ended_at": self.ended_at,
+            "updated_at": self.ended_at,
+            "member": self.member.id,
+            "duration": self.value * 60,
+        }
+
     class Meta:
         db_table = "ephemeral_task"

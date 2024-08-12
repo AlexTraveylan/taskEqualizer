@@ -54,18 +54,22 @@ def get_tasks_by_members(request: CustomRequest):
 
     members = request.member.family.members.all()
 
-    return JsonResponse(
-        {
-            "data": [
-                {
-                    "member_name": member.member_name,
-                    "tasks": [task.to_dict() for task in member.tasks.all()],
-                }
-                for member in members
-            ]
-        },
-        status=200,
-    )
+    rows = []
+    for member in members:
+        tasks = [task.to_dict() for task in member.tasks.all()]
+        ephemeral_tasks = [
+            ephemeral_task.to_taks_like_dict()
+            for ephemeral_task in member.ephemeral_task.all()
+        ]
+
+        rows.append(
+            {
+                "member_name": member.member_name,
+                "tasks": tasks + ephemeral_tasks,
+            }
+        )
+
+    return JsonResponse({"data": rows}, status=200)
 
 
 @router.get("/possibles_taks_details/", tags=["family"])
