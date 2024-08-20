@@ -27,7 +27,7 @@ class PTaskItem(TypedDict):
 FIRST_POSSIBLE_TASKS: dict[str, PTaskItem] = {
     "fr": {
         "task_name": "Cuisine",
-        "description": "Faire la cuisine, ou netoyer la cuisine",
+        "description": "Faire la cuisine, ou nettoyer la cuisine",
     },
     "en": {"task_name": "Cook", "description": "Cook, or bake"},
     "de": {"task_name": "Kochen", "description": "Kochen, oder Backen"},
