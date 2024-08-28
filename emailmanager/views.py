@@ -74,7 +74,6 @@ def request_password_reset(request: HttpRequest):
     user = User.objects.get(username=member.member_name)
     token = default_token_generator.make_token(user)
 
-    print(user.pk)
     html = html_wrapper_for_password_reset(token, user.pk)
 
     subject = "TaskEqualizer - Reset your password"
