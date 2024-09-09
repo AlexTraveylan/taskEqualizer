@@ -40,8 +40,8 @@ SECRET_KEY = (
 DEBUG = False if PRODUCTION else True
 
 HOST = "taskequalizer-production.up.railway.app" if PRODUCTION else "127.0.0.1:8000"
-ALLOWED_HOSTS = ["taskequalizer-production.up.railway.app"] if PRODUCTION else []
-
+# ALLOWED_HOSTS = ["taskequalizer-production.up.railway.app"] if PRODUCTION else []
+ALLOWED_HOSTS = ["taskequalizer-production.up.railway.app"]
 
 # Application definition
 
