@@ -30,13 +30,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-#h0$$kor(d5pxxm1o3sa=0s-ywcfk8dt1xunlkb=sz7#60*9kq"
+SECRET_KEY = (
+    os.getenv("SECRET_KEY")
+    if PRODUCTION
+    else "django-insecure-#h0$$kor(d5pxxm1o3sa=0s-ywcfk8dt1xunlkb=sz7#60*9kq"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if PRODUCTION else True
 
-HOST = "www.alextraveylan.fr" if PRODUCTION else "127.0.0.1:8000"
-ALLOWED_HOSTS = ["alextraveylan.fr", "www.alextraveylan.fr"] if PRODUCTION else []
+HOST = "taskequalizer-production.up.railway.app" if PRODUCTION else "127.0.0.1:8000"
+ALLOWED_HOSTS = ["taskequalizer-production.up.railway.app"] if PRODUCTION else []
 
 
 # Application definition
