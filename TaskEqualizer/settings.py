@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PRODUCTION = True if os.getenv("PRODUCTION") == "True" else False
+PRODUCTION = False
 CLIENT_HOST = os.getenv("CLIENT_HOST")
 
 
@@ -30,18 +30,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = (
-    os.getenv("SECRET_KEY")
-    if PRODUCTION
-    else "django-insecure-#h0$$kor(d5pxxm1o3sa=0s-ywcfk8dt1xunlkb=sz7#60*9kq"
-)
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if PRODUCTION else True
 
-HOST = "taskequalizer-production.up.railway.app" if PRODUCTION else "127.0.0.1:8000"
-# ALLOWED_HOSTS = ["taskequalizer-production.up.railway.app"] if PRODUCTION else []
+HOST = "taskequalizer-production.up.railway.app"
 ALLOWED_HOSTS = ["taskequalizer-production.up.railway.app"]
+
 
 # Application definition
 
@@ -101,24 +97,24 @@ SUPABASE_PORT = os.getenv("SUPABASE_PORT")
 SUPABASE_DBNAME = os.getenv("SUPABASE_DBNAME")
 SUPABASE_PASSWORD = os.getenv("SUPABASE_PASSWORD")
 
-if PRODUCTION is True:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": SUPABASE_DBNAME,
-            "USER": SUPABASE_USER,
-            "PASSWORD": SUPABASE_PASSWORD,
-            "HOST": SUPABASE_HOST,
-            "PORT": SUPABASE_PORT,
-        }
+# if PRODUCTION is True:
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": SUPABASE_DBNAME,
+        "USER": SUPABASE_USER,
+        "PASSWORD": SUPABASE_PASSWORD,
+        "HOST": SUPABASE_HOST,
+        "PORT": SUPABASE_PORT,
     }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+}
+# else:
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": BASE_DIR / "db.sqlite3",
+#         }
+#     }
 
 
 # Password validation
