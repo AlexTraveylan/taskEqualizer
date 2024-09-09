@@ -10,3 +10,9 @@ python 3.12
 django
 django-ninja
 ...
+
+## Deploy command
+
+```bash
+gunicorn --bind 0.0.0.0:8000 TaskEqualizer.wsgi:application
+```
