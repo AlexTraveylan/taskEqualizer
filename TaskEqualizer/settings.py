@@ -18,7 +18,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PRODUCTION = False
+PRODUCTION = False if os.getenv("PRODUCTION") == "True" else True
 CLIENT_HOST = os.getenv("CLIENT_HOST")
 
 
@@ -35,8 +35,8 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if PRODUCTION else True
 
-HOST = "taskequalizer-production.up.railway.app"
-ALLOWED_HOSTS = ["taskequalizer-production.up.railway.app"]
+HOST = "taskequalizer-production.up.railway.app" if PRODUCTION else "127.0.0.1:8000"
+ALLOWED_HOSTS = ["taskequalizer-production.up.railway.app"] if PRODUCTION else []
 
 
 # Application definition
@@ -97,24 +97,24 @@ SUPABASE_PORT = os.getenv("SUPABASE_PORT")
 SUPABASE_DBNAME = os.getenv("SUPABASE_DBNAME")
 SUPABASE_PASSWORD = os.getenv("SUPABASE_PASSWORD")
 
-# if PRODUCTION is True:
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": SUPABASE_DBNAME,
-        "USER": SUPABASE_USER,
-        "PASSWORD": SUPABASE_PASSWORD,
-        "HOST": SUPABASE_HOST,
-        "PORT": SUPABASE_PORT,
+if PRODUCTION is True:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": SUPABASE_DBNAME,
+            "USER": SUPABASE_USER,
+            "PASSWORD": SUPABASE_PASSWORD,
+            "HOST": SUPABASE_HOST,
+            "PORT": SUPABASE_PORT,
+        }
     }
-}
-# else:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": BASE_DIR / "db.sqlite3",
-#         }
-#     }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
